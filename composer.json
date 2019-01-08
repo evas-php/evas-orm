@@ -1,0 +1,13 @@
+{
+    "name": "evas-php/evas-orm",
+    "description": "Simple ORM",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "evasyakin",
+            "email": "e.vasyakin@itevas.ru"
+        }
+    ],
+    "require": {}
+}
