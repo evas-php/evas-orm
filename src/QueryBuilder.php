@@ -10,6 +10,7 @@ use Evas\Orm\JoinBuilder;
 /**
 * Сборщик запроса.
 * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+* @since 1.0
 */
 class QueryBuilder
 {
