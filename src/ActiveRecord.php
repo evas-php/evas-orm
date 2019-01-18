@@ -7,6 +7,7 @@ namespace Evas\Orm;
 /**
 * Простая реализация ActiveRecord.
 * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+* @since 1.0
 */
 abstract class ActiveRecord
 {

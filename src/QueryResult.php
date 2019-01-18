@@ -11,6 +11,7 @@ use \PDOStatement;
 /**
 * Класс для получения ответов базы данных в разном виде.
 * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+* @since 1.0
 */
 class QueryResult
 {

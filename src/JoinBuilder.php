@@ -9,6 +9,7 @@ use Evas\Orm\QueryBuilder;
 /**
 * Сборщик JOIN.
 * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+* @since 1.0
 */
 class JoinBuilder
 {

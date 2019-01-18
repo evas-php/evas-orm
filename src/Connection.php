@@ -15,6 +15,7 @@ use Evas\Orm\QueryResult;
 /**
 * Класс для соединения с базой данных.
 * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+* @since 1.0
 */
 class Connection
 {
