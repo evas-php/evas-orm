@@ -73,10 +73,7 @@ class InsertBuilder
         if (is_object($row)) $row = array_values($row);
         if (PhpHelper::isAssoc($row)) {
             if (empty($this->keys)) $this->keys(array_keys($row));
-            foreach ($this->keys as &$key) { 
-                // if (!isset($row[$key])) {
-                //     throw new InsertBuilderNotSetRowValueException($key);
-                // }
+            foreach ($this->keys as &$key) {
                 $this->bindValue($row[$key] ?? 'NULL');
             }
         } else {

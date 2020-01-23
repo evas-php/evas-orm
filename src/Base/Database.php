@@ -178,9 +178,6 @@ class Database
      */
     public function beginTransaction()
     {
-        echo '<hr>In Transaction: ' . ($this->getPdo()->inTransaction() ? 'Yes' : 'No') . '<br>';
-        if (! (false === $this->inTransaction()) ) echo 'Igone ';
-        echo 'beginTransaction<br>';
         if (false === $this->inTransaction()) $this->getPdo()->beginTransaction();
         return $this;
     }
@@ -191,9 +188,6 @@ class Database
      */
     public function rollBack()
     {
-        echo '<br>In Transaction: ' . ($this->getPdo()->inTransaction() ? 'Yes' : 'No') . '<br>';
-        if (! (true === $this->inTransaction()) ) echo 'Igone ';
-        echo 'rollBack<hr>';
         if (true === $this->inTransaction()) $this->getPdo()->rollBack();
         return $this;
     }

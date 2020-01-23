@@ -199,8 +199,6 @@ abstract class OrmModel
             // get updated
             $values = static::getUpdated($object);
         }
-        
-        echo '<b>saved values: </b>'; var_dump($values); echo '<br>';
 
         if (null !== $primaryValue) {
             static::getDb()->update(static::tableName(), $values)

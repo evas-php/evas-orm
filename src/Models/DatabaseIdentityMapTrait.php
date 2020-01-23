@@ -71,7 +71,6 @@ trait DatabaseIdentityMapTrait
      */
     public function identityMapUnsetByObject(object &$object, string $primaryKey)
     {
-        echo "identityMapUnsetByObject";
         $this->identityMap()->unsetByObject($object, $primaryKey);
     }
 

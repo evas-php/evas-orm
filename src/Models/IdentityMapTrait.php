@@ -114,9 +114,6 @@ trait IdentityMapTrait
      */
     public function unset(string $className, string $primary)
     {
-        echo '<hr>';
-        echo "Unset $className, $primary";
-        echo '<hr>';
         $object = $this->get($className, $primary);
         if (isset($object)) {
             unset($object);
