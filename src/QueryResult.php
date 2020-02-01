@@ -10,7 +10,7 @@ use Evas\Orm\Base\QueryResult as BaseQueryResult;
 
 /**
  * Класс-обертка базового QueryResult с добавление IdentityMap.
- * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+ * @author Egor Vasyakin <egor@evas-php.com>
  * @since 1.0
  */
 class QueryResult extends BaseQueryResult

@@ -9,7 +9,7 @@ use Evas\Orm\Database;
 
 /**
  * Базовая абстрактная модель ORM для ActiveRecord и DataMapper.
- * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+ * @author Egor Vasyakin <egor@evas-php.com>
  * @since 1.0
  */
 abstract class OrmModel

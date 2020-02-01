@@ -8,7 +8,7 @@ use Evas\Base\BaseException;
 
 /**
  * Базовый класс исключений ORM.
- * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+ * @author Egor Vasyakin <egor@evas-php.com>
  * @since 1.0
  */
 class OrmException extends BaseException

@@ -15,7 +15,7 @@ if (!defined('EVAS_DATABASE_CLASS')) define('EVAS_DATABASE_CLASS', Database::cla
 
 /**
  * Расширение поддержки базы данных приложения.
- * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+ * @author Egor Vasyakin <egor@evas-php.com>
  * @since 1.1
  */
 trait AppDbTrait

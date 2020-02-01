@@ -12,7 +12,7 @@ if (!defined('EVAS_DATABASE_CONFIG')) define('EVAS_DATABASE_CONFIG', null);
 
 /**
  * Расширение поддержки установки, подгрузки и автоподгрузки конфига базы данных.
- * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+ * @author Egor Vasyakin <egor@evas-php.com>
  * @since 1.1
  */
 trait AppDbConfigTrait

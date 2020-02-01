@@ -14,7 +14,7 @@ use Evas\Orm\Builders\Exception\InsertBuilderNotSetRowValueException;
 
 /**
  * Сборщик INSERT-запроса.
- * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+ * @author Egor Vasyakin <egor@evas-php.com>
  * @since 1.0
  */
 class InsertBuilder

@@ -15,7 +15,7 @@ if (!defined('EVAS_DATABASE_IDENTITY_MAP_CLASS')) {
 
 /**
  * Трейт расширения базы данных IdentityMap.
- * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+ * @author Egor Vasyakin <egor@evas-php.com>
  * @since 1.0
  */
 trait DatabaseIdentityMapTrait

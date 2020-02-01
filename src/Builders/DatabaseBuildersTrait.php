@@ -20,7 +20,7 @@ if (!defined('EVAS_DATABASE_QUERY_BUILDER_CLASS')) {
 
 /**
  * Трейт расширения класса соединения с базой данных подддержкой базовых запросов и сборщиков.
- * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+ * @author Egor Vasyakin <egor@evas-php.com>
  * @since 1.0
  */
 trait DatabaseBuildersTrait

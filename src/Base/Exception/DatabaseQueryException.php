@@ -8,7 +8,7 @@ use Evas\Orm\OrmException;
 
 /**
  * Класс исключения sql-запроса.
- * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+ * @author Egor Vasyakin <egor@evas-php.com>
  * @since 1.0
  */
 class DatabaseQueryException extends OrmException

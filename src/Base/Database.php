@@ -37,7 +37,7 @@ if (!defined('EVAS_DATABASE_QUERY_RESULT_CLASS')) {
 
 /**
  * Базовый класс соединения с базой данных.
- * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+ * @author Egor Vasyakin <egor@evas-php.com>
  * @since 1.0
  */ 
 class Database

@@ -9,7 +9,7 @@ use Evas\Orm\Models\OrmModel;
 
 /**
  * Реализация DataMapper.
- * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+ * @author Egor Vasyakin <egor@evas-php.com>
  * @since 1.0
  */
 abstract class DataMapper extends OrmModel

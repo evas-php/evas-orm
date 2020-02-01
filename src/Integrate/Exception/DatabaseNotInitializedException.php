@@ -9,7 +9,7 @@ use Evas\Orm\OrmException;
 
 /**
  * Класс исключения отсутствия соединения с базой данных.
- * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+ * @author Egor Vasyakin <egor@evas-php.com>
  * @since 1.0
  */
 class DatabaseNotInitializedException extends OrmException

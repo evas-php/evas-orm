@@ -6,7 +6,7 @@ namespace Evas\Orm\Base;
 
 /**
  * Класс ошибки запроса в базу данных.
- * @author Egor Vasyakin <e.vasyakin@itevas.ru>
+ * @author Egor Vasyakin <egor@evas-php.com>
  * @since 1.0
  */
 class QueryError
