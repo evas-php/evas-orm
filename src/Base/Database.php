@@ -13,7 +13,7 @@ use Evas\Orm\Base\QueryError;
 use Evas\Orm\Base\QueryResult;
 
 /**
- * Константы для класса базы данных по умолчанию.
+ * Константы для класса по умолчанию.
  */
 if (!defined('EVAS_DATABASE_OPTIONS')) 
     define('EVAS_DATABASE_OPTIONS', [
