@@ -14,7 +14,7 @@ use Evas\Orm\Scheme\DatabaseScheme;
 
 
 /**
- * Константы для свойств класс базы данных по умолчанию.
+ * Константы для свойств класса по умолчанию.
  */
 if (!defined('EVAS_DATABASE_QUERY_RESULT_CLASS')) {
     define('EVAS_DATABASE_QUERY_RESULT_CLASS', QueryResult::class);
