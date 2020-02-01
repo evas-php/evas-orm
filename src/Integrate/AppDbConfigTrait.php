@@ -63,7 +63,7 @@ trait AppDbConfigTrait
      */
     public static function loadDbConfig()
     {
-        $config = static::load(static::getDbConfigPath());
+        $config = static::loadByApp(static::getDbConfigPath());
         if (! $config) throw new DatabaseConfigNotFoundException;
         // устанавливаем и возвращаем конфиг базы 
         return static::setDbConfig($config)->instanceGet('dbConfig');
