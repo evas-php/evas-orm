@@ -1,14 +1,14 @@
 {
     "name": "evas-php/evas-orm",
-    "description": "Simple ORM",
+    "description": "ORM module (Database, QueryResult, Builders, Table, ActiveRecord, DataMapper, IdentityMap, App intagrate traits)",
     "version": "1.0",
     "minimum-stability": "dev",
     "type": "library",
-    "license": "MIT",
+    "license": "CC BY 4.0",
     "authors": [
         {
-            "name": "evasyakin",
-            "email": "e.vasyakin@itevas.ru"
+            "name": "Egor Vasyakin",
+            "email": "egor@evas-php.com"
         }
     ],
     "require": {}
