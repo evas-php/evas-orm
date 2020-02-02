@@ -50,7 +50,10 @@ abstract class OrmModel
      */
     public static function tableName(): string
     {
-        return static::$tableName ?? static::generateTableName();
+        if (empty(static::$tableName)) {
+            static::$tableName = static::generateTableName();
+        }
+        return static::$tableName;
     }
 
     /**
