@@ -47,6 +47,11 @@ class QueryBuilder
     public $groupBy;
 
     /**
+     * @var string having часть (условие для данных агрегированных group by)
+     */
+    public $having;
+
+    /**
      * @var string поля сортировки
      */
     public $orderBy;
@@ -232,6 +237,18 @@ class QueryBuilder
     }
 
     /**
+     * Установка HAVING.
+     * @param string having часть
+     * @return self
+     */
+    public function having(string $having, array $values = [])
+    {
+        if (!empty($this->having)) $this->having .= ' ';
+        $this->having .= $having;
+        return $this->bindValues($values);
+    }
+
+    /**
      * Установка ORDER BY.
      * @param string столбцы сортировки
      * @return self
@@ -281,6 +298,9 @@ class QueryBuilder
         }
         if (!empty($this->groupBy)) {
             $sql .= ' GROUP BY ' . $this->groupBy;
+            if (!empty($this->having)) {
+                $sql .= ' HAVING ' . $this->having;
+            }
         }
         if (!empty($this->orderBy)) {
             $sql .= ' ORDER BY ' . $this->orderBy;
