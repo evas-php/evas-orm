@@ -30,4 +30,22 @@ trait DatabaseTableTrait
         }
         return $this->tables[$table];
     }
+    
+    /**
+     * Получение списка таблицы базы данных.
+     * @param bool перезапросить список таблиц
+     * @return array
+     */
+    public function tables(bool $reload = false): array
+    {
+        static $tables = null;
+        if (null === $tables || true === $reload) {
+            $tables = [];
+            $rows = $this->query('SHOW TABLES')->numericArrayAll();
+            foreach ($rows as &$row) {
+                $tables[] = $row[0];
+            }
+        }
+        return $tables;
+    }
 }
