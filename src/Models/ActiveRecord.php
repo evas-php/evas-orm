@@ -49,7 +49,6 @@ abstract class ActiveRecord extends OrmModel
 
     /**
      * Создание объекта записи с записью в базу.
-     * @param string имя класса объекта
      * @param array|null значения записи
      * @return object
      */
