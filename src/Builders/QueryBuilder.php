@@ -326,11 +326,13 @@ class QueryBuilder
     /**
      * Получение записей.
      * @param int|null limit
+     * @param int|null offset
      * @return QueryResult
      */
-    public function query(int $limit = null): QueryResult
+    public function query(int $limit = null, int $offset = null): QueryResult
     {
         if ($limit > 0) $this->limit($limit);
+        if ($offset > 0) $this->offset($offset);
         return $this->database->query($this->getSql(), $this->values());
     }
 }
