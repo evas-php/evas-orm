@@ -5,6 +5,7 @@
 namespace Evas\Orm\Scheme;
 
 use Evas\Orm\Base\Database;
+use Evas\Orm\OrmException;
 use Evas\Orm\Scheme\ColumnScheme;
 use Evas\Orm\Scheme\Exception\NotFoundColumnException;
 
@@ -60,6 +61,9 @@ class TableScheme
         if (empty($this->primaryKey)) {
             $row = $this->database->query("SHOW KEYS FROM `$this->table` WHERE Key_name = 'PRIMARY'")->assocArray();
             $this->primaryKey = $row['Column_name'];
+        }
+        if (empty($this->primaryKey)) {
+            throw new OrmException("Primary key does not exist in table \"$this->table\"");
         }
         return $this->primaryKey;
     }
