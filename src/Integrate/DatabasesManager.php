@@ -4,7 +4,7 @@
  */
 namespace Evas\Orm\Integrate;
 
-use Evas\Base\PhpHelper;
+use Evas\Base\Helpers\PhpHelper;
 use Evas\Orm\Database;
 use Evas\Orm\Integrate\Exception\DatabaseNotInitializedException;
 

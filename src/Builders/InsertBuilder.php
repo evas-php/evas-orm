@@ -4,7 +4,7 @@
  */
 namespace Evas\Orm\Builders;
 
-use Evas\Base\PhpHelper;
+use Evas\Base\Helpers\PhpHelper;
 use Evas\Orm\Base\Database;
 use Evas\Orm\Base\QueryResult;
 use Evas\Orm\Builders\QueryValuesTrait;
