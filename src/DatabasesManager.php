@@ -2,7 +2,7 @@
 /**
  * @package evas-php/evas-orm
  */
-namespace Evas\Orm\Integrate;
+namespace Evas\Orm;
 
 use Evas\Base\Helpers\PhpHelper;
 use Evas\Orm\Database;
