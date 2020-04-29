@@ -26,14 +26,26 @@ trait AppDbTrait
     use AppDbConfigTrait;
 
     /**
-     * @var string класс для соединения с базой данных.
+     * Установка класса базы данных.
+     * @param string
+     * @return self
      */
-    public static $databaseClass = EVAS_DATABASE_CLASS;
+    public static function setDbClass(string $dbClass)
+    {
+        return static::set('dbClass', $dbClass);
+    }
 
     /**
-     * @var Database соединение
+     * Получение класса базы данных.
+     * @param string
      */
-    protected $db;
+    public static function getDbClass(): string
+    {
+        if (!static::has('dbClass')) {
+            static::set('dbClass', EVAS_DATABASE_CLASS);
+        }
+        return static::get('dbClass');
+    }
 
     /**
      * Установка соединения.
@@ -42,7 +54,7 @@ trait AppDbTrait
      */
     public static function setDb(Database $db)
     {
-        return static::instanceSet('db', $db);
+        return static::set('db', $db);
     }
 
     /**
@@ -52,7 +64,8 @@ trait AppDbTrait
      */
     public static function initDb(array $params)
     {
-        return static::setDb(new static::$databaseClass($params));
+        $dbClass = static::getDbClass();
+        return static::setDb(new $dbClass($params));
     }
 
     /**
@@ -62,10 +75,10 @@ trait AppDbTrait
      */
     public static function getDb()
     {
-        if (!static::instanceHas('db')) {
+        if (!static::has('db')) {
             throw new DatabaseNotInitializedException;
         }
-        return static::instanceGet('db');
+        return static::get('db');
     }
 
     /**
@@ -75,9 +88,9 @@ trait AppDbTrait
      */
     public static function db()
     {
-        if (!static::instanceHas('db')) {
+        if (!static::has('db')) {
             static::initDb(static::getDbConfig());
         }
-        return static::getDb('db');
+        return static::getDb();
     }
 }

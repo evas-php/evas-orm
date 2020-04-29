@@ -7,7 +7,9 @@ namespace Evas\Orm\Integrate;
 use Evas\Orm\Integrate\Exception\DatabaseConfigNotFoundException;
 
 
-if (!defined('EVAS_DATABASE_CONFIG_PATH')) define('EVAS_DATABASE_CONFIG_PATH', 'config/db.php');
+if (!defined('EVAS_DATABASE_CONFIG_PATH')) {
+    define('EVAS_DATABASE_CONFIG_PATH', 'config/private/db.php');
+}
 if (!defined('EVAS_DATABASE_CONFIG')) define('EVAS_DATABASE_CONFIG', null);
 
 /**
@@ -18,23 +20,13 @@ if (!defined('EVAS_DATABASE_CONFIG')) define('EVAS_DATABASE_CONFIG', null);
 trait AppDbConfigTrait
 {
     /**
-     * @var string путь к конфигу базы данных
-     */
-    protected $dbConfigPath = EVAS_DATABASE_CONFIG_PATH;
-
-    /**
-     * @var array конфиг базы данных
-     */
-    protected $dbConfig = EVAS_DATABASE_CONFIG;
-
-    /**
      * Установка пути к конфигу базы данных.
      * @param string путь
      * @return self
      */
     public static function setDbConfigPath(string $path)
     {
-        return static::instanceSet('dbConfigPath', $path);
+        return static::set('dbConfigPath', $path);
     }
 
     /**
@@ -43,7 +35,10 @@ trait AppDbConfigTrait
      */
     public static function getDbConfigPath(): string
     {
-        return static::instanceGet('dbConfigPath');
+        if (!static::has('dbConfigPath')) {
+            static::set('dbConfigPath', EVAS_DATABASE_CONFIG_PATH);
+        }
+        return static::get('dbConfigPath');
     }
 
     /**
@@ -53,7 +48,7 @@ trait AppDbConfigTrait
      */
     public static function setDbConfig(array $config)
     {
-        return static::instanceSet('dbConfig', $config);
+        return static::set('dbConfig', $config);
     }
 
     /**
@@ -66,7 +61,7 @@ trait AppDbConfigTrait
         $config = static::loadByApp(static::getDbConfigPath());
         if (! $config) throw new DatabaseConfigNotFoundException;
         // устанавливаем и возвращаем конфиг базы 
-        return static::setDbConfig($config)->instanceGet('dbConfig');
+        return static::setDbConfig($config)->getDbConfig();
     }
 
     /**
@@ -76,9 +71,13 @@ trait AppDbConfigTrait
      */
     public static function getDbConfig()
     {
-        if (!static::instanceHas('dbConfig')) {
-            static::loadDbConfig();
+        if (!static::has('dbConfig')) {
+            if (is_array(EVAS_DATABASE_CONFIG)) {
+                static::set('dbConfig', EVAS_DATABASE_CONFIG);
+            } else {
+                static::loadDbConfig();
+            }
         }
-        return static::instanceGet('dbConfig');
+        return static::get('dbConfig');
     }
 }

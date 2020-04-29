@@ -6,10 +6,17 @@ namespace Evas\Orm\Integrate;
 
 use Evas\Base\Helpers\PhpHelper;
 use Evas\Orm\Base\Database;
+use Evas\Orm\DatabasesManager;
 use Evas\Orm\Integrate\AppDbConfigTrait;
-use Evas\Orm\Integrate\DatabasesManager;
 use Evas\Orm\Integrate\Exception\DatabaseConfigNotFoundException;
 use Evas\Orm\Integrate\Exception\DatabaseNotInitializedException;
+
+/**
+ * Константы для параметров соединения по умолчанию.
+ */
+if (!defined('EVAS_DATABASES_MANAGER_CLASS')) {
+    define('EVAS_DATABASES_MANAGER_CLASS', DatabasesManager::class);
+}
 
 /**
  * Расширение поддержки множества баз данных приложения.
@@ -24,9 +31,26 @@ trait AppDbsTrait
     use AppDbConfigTrait;
 
     /**
-     * @var DatabasesManager мененджер соединений
+     * Установка класса менеджера баз данных.
+     * @param string
+     * @return self
      */
-    protected $dbs;
+    public static function setDbsManagerClass(string $dbsManagerClass)
+    {
+        return static::set('dbsManagerClass', $dbsManagerClass);
+    }
+
+    /**
+     * Получение класса менеджера баз данных.
+     * @param string
+     */
+    public static function getDbsManagerClass(): string
+    {
+        if (!static::has('dbsManagerClass')) {
+            static::set('dbsManagerClass', EVAS_DATABASES_MANAGER_CLASS);
+        }
+        return static::get('dbsManagerClass');
+    }
 
     /**
      * Получение менеджера соединений.
@@ -34,10 +58,10 @@ trait AppDbsTrait
      */
     public static function getDatabasesManager()
     {
-        if (!static::instanceHas('dbs')) {
-            static::instanceSet('dbs', new DatabasesManager);
+        if (!static::has('dbs')) {
+            static::set('dbs', new DatabasesManager);
         }
-        return static::instanceGet('dbs');
+        return static::get('dbs');
     }
 
     /**
