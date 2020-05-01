@@ -11,5 +11,10 @@
             "email": "egor@evas-php.com"
         }
     ],
-    "require": {}
+    "repositories": [
+        {"type": "vcs", "url": "https://github.com/evas-php/evas-base"}
+    ],
+    "require": {
+        "evas-php/evas-base": "dev-master"
+    }
 }
