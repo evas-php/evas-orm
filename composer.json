@@ -1,8 +1,8 @@
 {
     "name": "evas-php/evas-orm",
     "description": "ORM module (Database, QueryResult, Builders, Table, ActiveRecord, DataMapper, IdentityMap, App intagrate traits)",
+    "keywords": ["orm", "db", "database", "active record", "data mapper", "query builder", "evas-php"],
     "version": "1.0",
-    "minimum-stability": "dev",
     "type": "library",
     "license": "CC-BY-4.0",
     "authors": [
@@ -11,10 +11,7 @@
             "email": "egor@evas-php.com"
         }
     ],
-    "repositories": [
-        {"type": "vcs", "url": "https://github.com/evas-php/evas-base"}
-    ],
     "require": {
-        "evas-php/evas-base": "dev-master"
+        "evas-php/evas-base": "*"
     }
 }
