@@ -251,8 +251,7 @@ class QueryBuilder
      */
     public function having(string $having, array $values = [])
     {
-        if (!empty($this->having)) $this->having .= ' ';
-        $this->having .= $having;
+        $this->having = $having;
         return $this->bindValues($values);
     }
 
