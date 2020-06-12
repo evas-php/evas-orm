@@ -73,7 +73,7 @@ trait AppDbsTrait
      */
     public static function setDb(Database $connection, string $name = null): object
     {
-        static::getDatabasesManager()->set($connection, $name);
+        static::getDbsManager()->set($connection, $name);
         return static::instance();
     }
 
@@ -86,7 +86,7 @@ trait AppDbsTrait
      */
     public static function initDb(array $params = null, string $name = null): object
     {
-        static::getDatabasesManager()->init($params, $name);
+        static::getDbsManager()->init($params, $name);
         return static::instance();
     }
 
@@ -98,7 +98,7 @@ trait AppDbsTrait
      */
     public static function getDb(string $name = null): object
     {
-        return static::getDatabasesManager()->get($name);
+        return static::getDbsManager()->get($name);
     }
 
     /**
@@ -111,7 +111,7 @@ trait AppDbsTrait
     public static function db(string $name = null): object
     {
         try {
-            return static::getDatabasesManager()->get($name);
+            return static::getDbsManager()->get($name);
         } catch (DatabaseNotInitializedException $e) {
             try {
                 $config = static::getDbConfig();
@@ -124,7 +124,7 @@ trait AppDbsTrait
                     ? @$config['name'] ?? $config['dbname']
                     : @$config[0]['name'] ?? $config[0]['dbname'];
             }
-            return static::getDatabasesManager()->get($name);
+            return static::getDbsManager()->get($name);
         }
     }
 
@@ -136,7 +136,7 @@ trait AppDbsTrait
      */
     public static function setLastDb(string $name)
     {
-        static::getDatabasesManager()->setLast($name);
+        static::getDbsManager()->setLast($name);
         return static::instance();
     }
 }
