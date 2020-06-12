@@ -53,13 +53,23 @@ trait AppDbsTrait
     }
 
     /**
+     * Установка менеджера соединений.
+     * @param DatabasesManager
+     * @return self
+     */
+    public static function setDbsManager(DatabasesManager $dbs): object
+    {
+        return static::set('dbs', $dbs);
+    }
+
+    /**
      * Получение менеджера соединений.
      * @return DatabasesManager
      */
     public static function getDbsManager(): object
     {
         if (!static::has('dbs')) {
-            static::set('dbs', new DatabasesManager);
+            static::setDbsManager(new DatabasesManager);
         }
         return static::get('dbs');
     }
