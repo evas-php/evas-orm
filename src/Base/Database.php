@@ -15,7 +15,7 @@ use Evas\Orm\Base\QueryResult;
 /**
  * Константы для класса по умолчанию.
  */
-if (!defined('EVAS_DATABASE_OPTIONS')) 
+if (!defined('EVAS_DATABASE_OPTIONS')) {
     define('EVAS_DATABASE_OPTIONS', [
         PDO::ATTR_EMULATE_PREPARES => false, // помогает с приведением типов из базы в php
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -25,7 +25,7 @@ if (!defined('EVAS_DATABASE_OPTIONS'))
         // PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false,
         // PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
     ]);
-
+}
 if (!defined('EVAS_DATABASE_DRIVER')) define('EVAS_DATABASE_DRIVER', 'mysql');
 if (!defined('EVAS_DATABASE_HOST')) define('EVAS_DATABASE_HOST', 'localhost');
 if (!defined('EVAS_DATABASE_CHARSET')) define('EVAS_DATABASE_CHARSET', 'utf8');
