@@ -233,12 +233,14 @@ class QueryBuilder
     /**
      * Установка GROUP BY.
      * @param string столбцы группировки
+     * @param string|null having условие
+     * @param array|null параметра having для экранирования
      * @return self
      */
-    public function groupBy(string $columns)
+    public function groupBy(string $columns, string $having = null, array $havingValues = [])
     {
         $this->groupBy = $columns;
-        return $this;
+        return !empty($having) ? $this->having($having, $havingValues) : $this;
     }
 
     /**
