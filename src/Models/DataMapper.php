@@ -20,13 +20,26 @@ abstract class DataMapper extends OrmModel
     public static $dataClassName;
 
     /**
+     * Получение имени класса модели.
+     * @throws DataClassNameEmptyException
+     * @return string
+     */
+    protected static function dataClassName(): string
+    {
+        if (empty(static::$dataClassName)) {
+            throw new DataClassNameEmptyException();
+        }
+        return static::$dataClassName;
+    }
+
+    /**
      * Создание объекта записи.
      * @param array|null значения записи
      * @return object
      */
     public static function create(array $values = null): object
     {
-        return static::baseCreate(static::$dataClassName, $values);
+        return static::baseCreate(static::dataClassName(), $values);
     }
 
     /**
