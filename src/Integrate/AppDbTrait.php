@@ -65,6 +65,7 @@ trait AppDbTrait
     public static function initDb(array $params): object
     {
         $dbClass = static::getDbClass();
+        $params = array_merge(static::getDbConfig(), $params);
         return static::setDb(new $dbClass($params));
     }
 
@@ -89,7 +90,7 @@ trait AppDbTrait
     public static function db(): object
     {
         if (!static::has('db')) {
-            static::initDb(static::getDbConfig());
+            static::initDb();
         }
         return static::getDb();
     }
