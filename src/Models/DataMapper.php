@@ -5,6 +5,7 @@
 namespace Evas\Orm\Models;
 
 use Evas\Orm\Base\QueryResult;
+use Evas\Orm\Models\Exception\DataClassNameEmptyException;
 use Evas\Orm\Models\OrmModel;
 
 /**
