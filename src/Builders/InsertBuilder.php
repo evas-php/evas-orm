@@ -10,7 +10,6 @@ use Evas\Orm\Base\QueryResult;
 use Evas\Orm\Builders\QueryValuesTrait;
 use Evas\Orm\Builders\Exception\InsertBuilderEmptyKeysException;
 use Evas\Orm\Builders\Exception\InsertBuilderEmptyRowsException;
-use Evas\Orm\Builders\Exception\InsertBuilderNotSetRowValueException;
 
 /**
  * Сборщик INSERT-запроса.
@@ -64,7 +63,6 @@ class InsertBuilder
     /**
      * Установка значений записи.
      * @param array|object
-     * @throws InsertBuilderNotSetRowValueException
      * @return self
      */
     public function row($row)
