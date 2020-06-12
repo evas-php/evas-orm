@@ -57,6 +57,11 @@ class QueryBuilder
     public $orderBy;
 
     /**
+     * @var bool сортировать по убыванию
+     */
+    public $orderDesc = false;
+
+    /**
      * @var int сдвиг поиска
      */
     public $offset;
@@ -252,11 +257,13 @@ class QueryBuilder
     /**
      * Установка ORDER BY.
      * @param string столбцы сортировки
+     * @param bool|null сортировать по убыванию
      * @return self
      */
-    public function orderBy(string $columns)
+    public function orderBy(string $columns, bool $desc = false)
     {
         $this->orderBy = $columns;
+        $this->orderDesc = $desc;
         return $this;
     }
 
@@ -305,6 +312,9 @@ class QueryBuilder
         }
         if (!empty($this->orderBy)) {
             $sql .= ' ORDER BY ' . $this->orderBy;
+            if (true === $this->orderDesc) {
+                $sql .= ' DESC';
+            }
         }
         if (!empty($this->limit)) {
             $sql .= ' LIMIT ' . $this->limit; 
