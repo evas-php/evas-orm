@@ -60,7 +60,7 @@ class JoinBuilder
     /**
      * Установка склеиваемой таблицы.
      * @param string склеиваемая таблица или запрос записей склеиваемой таблицы
-     * @param array значения для экранирования\
+     * @param array|null значения для экранирования\
      * @return $this
      */
     public function from(string $from, array $values = [])
@@ -111,7 +111,7 @@ class JoinBuilder
     }
 
     /**
-     * Закрытие join и его установка в сборщик запроса.
+     * Сборка join-части запроса и его установка в сборщик запроса.
      * @return QueryBuilder
      */
     public function endJoin()

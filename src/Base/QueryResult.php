@@ -130,7 +130,7 @@ class QueryResult
     }
 
     /**
-     * Получить все записи в виде объектов класса.
+     * Получить все записи в виде массива объектов класса.
      * @param string имя класса
      * @return array
      */
@@ -160,7 +160,7 @@ class QueryResult
      * @param object|null запись
      * @return object|null постобработанная запись
      */
-    public function objectHook(object $row = null)
+    public function objectHook(object $row = null): ?object
     {
         return $row;
     }

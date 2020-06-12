@@ -54,6 +54,7 @@ class TableScheme
 
     /**
      * Получение первичного ключа таблицы.
+     * @throws OrmException
      * @return string
      */
     public function primaryKey(): string

@@ -27,17 +27,17 @@ class ColumnScheme
     public $null;
 
     /**
-     * @var string ключ
+     * @var string|null ключ
      */
     public $key;
 
     /**
-     * @var string значение по умолчанию
+     * @var string|null значение по умолчанию
      */
     public $default;
 
     /**
-     * @var string extra
+     * @var string|null extra
      */
     public $extra;
 
