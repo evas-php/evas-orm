@@ -58,6 +58,7 @@ abstract class DataMapper extends OrmModel
      * Сохранение записи.
      * @param object
      * @param array|null имена сохраняемых полей
+     * @return object
      */
     public static function save(object &$object, array $columns = null): object
     {
