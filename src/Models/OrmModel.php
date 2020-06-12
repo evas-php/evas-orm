@@ -102,6 +102,11 @@ abstract class OrmModel
     }
 
 
+    /**
+     * Получение значений объекта совместимых со столбцами таблицы.
+     * @param object объект
+     * @return array значения
+     */
     public static function values(object &$object): array
     {
         $columns = static::columns();
@@ -115,6 +120,11 @@ abstract class OrmModel
     }
 
 
+    /**
+     * Получение обновленных значений в объекте.
+     * @param object объект
+     * @return array значения
+     */
     public static function getUpdated(object &$object): array
     {
         $primaryKey = static::primaryKey();
@@ -233,8 +243,8 @@ abstract class OrmModel
 
     /**
      * Базовый поиск записи.
-     * @param int|string|array|null первичный ключ или массив первичных ключей
-     * @param string|null имя класса сущности/сущностей
+     * @param string имя класса сущности/сущностей
+     * @param int|string|array|null значение первичного ключа или массив значений первичного ключа
      * @return static|array|QueryBuilder
      */
     public static function baseFind($primary = null, string $className)

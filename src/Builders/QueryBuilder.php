@@ -100,8 +100,8 @@ class QueryBuilder
     /**
      * Начало UPDATE запроса.
      * @param string имя таблицы
-     * @param string|array|object значения записи или sql-код
-     * @param array значения для экранирования
+     * @param string|array|object значения записи или sql-запрос
+     * @param array|null значения для экранирования используемые в sql-запросе
      * @return self
      */
     public function update(string $tbl, $row, array $vals = [])
@@ -125,7 +125,7 @@ class QueryBuilder
     /**
      * Установка части FROM.
      * @param string часть from
-     * @param array параметры для экранирования
+     * @param array|null параметры для экранирования
      * @return self
      */
     public function from(string $from, array $values = [])
@@ -186,8 +186,8 @@ class QueryBuilder
     }
 
     /**
-     * Добавление JOIN.
-     * @param string join
+     * Добавление JOIN с помощью sql.
+     * @param string join sql
      * @param array параметры для экранирования
      * @return self
      */
@@ -238,7 +238,8 @@ class QueryBuilder
 
     /**
      * Установка HAVING.
-     * @param string having часть
+     * @param string having условие
+     * @param array параметры для экранирования
      * @return self
      */
     public function having(string $having, array $values = [])

@@ -31,6 +31,7 @@ abstract class ActiveRecord extends OrmModel
 
     /**
      * Удаление записи.
+     * @return QueryResult
      */
     public function delete(): QueryResult
     {
@@ -59,7 +60,7 @@ abstract class ActiveRecord extends OrmModel
 
     /**
      * Поиск записи.
-     * @param int|array|null первичный ключ или массив первичных ключей
+     * @param int|array|null значение первичного ключа или массив значений первичного ключа
      * @return static|array|QueryBuilder
      */
     public static function find($id = null)

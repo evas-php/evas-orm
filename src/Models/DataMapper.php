@@ -53,6 +53,7 @@ abstract class DataMapper extends OrmModel
     /**
      * Удаление записи.
      * @param object
+     * @return QueryResult
      */
     public static function delete(object &$object): QueryResult
     {
