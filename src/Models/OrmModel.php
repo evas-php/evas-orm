@@ -247,10 +247,10 @@ abstract class OrmModel
      * @param int|string|array|null значение первичного ключа или массив значений первичного ключа
      * @return static|array|QueryBuilder
      */
-    public static function baseFind($primary = null, string $className)
+    public static function baseFind(string $className, $primary = null)
     {
         $qb = static::getDb()->select(static::tableName());
-        if ($primary) {
+        if (!empty($primary)) {
             $primaryKey = static::primaryKey();
             return is_array($primary) 
                 ? $qb->whereIn($primaryKey, $primary)
