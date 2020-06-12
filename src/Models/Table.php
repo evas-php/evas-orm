@@ -29,13 +29,13 @@ class Table extends TableScheme
 
     /**
      * Вставка нескольких записей.
-     * @param array ключи записи
      * @param array значения записей
+     * @param array|null ключи записи
      * @return QueryResult
      */
-    public function batchInsert(array $keys, $rows): QueryResult
+    public function batchInsert(array $rows, array $keys = null): QueryResult
     {
-        return $this->database->batchInsert($this->table, $keys, $rows);
+        return $this->database->batchInsert($this->table, $rows, $keys);
     }
 
     /**

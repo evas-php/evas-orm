@@ -67,13 +67,15 @@ trait DatabaseBuildersTrait
     /**
      * Вставка нескольких записей.
      * @param string имя таблицы
-     * @param array ключи записи
      * @param array значения записей
+     * @param array|null столбцы записи
      * @return QueryResult
      */
-    public function batchInsert(string $tbl, array $keys, $rows): QueryResult
+    public function batchInsert(string $tbl, array $rows, array $columns): QueryResult
     {
-        return $this->insert($tbl)->keys($keys)->rows($rows)->query();
+        $ib = $this->insert($tbl);
+        if (!empty($columns)) $ib->key($columns);
+        return $ib->rows($rows)->query();
     }
 
     /**
