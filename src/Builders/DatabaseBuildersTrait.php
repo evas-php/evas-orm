@@ -57,7 +57,7 @@ trait DatabaseBuildersTrait
      * @param array|object|null значения записи для сохранения с автосборкой
      * @return InsertBuilder|QueryResult
      */
-    public function insert(string $tbl, $row = null)
+    public function insert(string $tbl, $row = null): object
     {
         $insertBuilderClass = $this->insertBuilderClass;
         $ib = new $insertBuilderClass($this, $tbl);

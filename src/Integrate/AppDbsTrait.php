@@ -35,7 +35,7 @@ trait AppDbsTrait
      * @param string
      * @return self
      */
-    public static function setDbsManagerClass(string $dbsManagerClass)
+    public static function setDbsManagerClass(string $dbsManagerClass): object
     {
         return static::set('dbsManagerClass', $dbsManagerClass);
     }
@@ -56,7 +56,7 @@ trait AppDbsTrait
      * Получение менеджера соединений.
      * @return DatabasesManager
      */
-    public static function getDatabasesManager()
+    public static function getDbsManager(): object
     {
         if (!static::has('dbs')) {
             static::set('dbs', new DatabasesManager);
@@ -71,7 +71,7 @@ trait AppDbsTrait
      * @throws DatabaseNotInitializedException
      * @return self
      */
-    public static function setDb(Database $connection, string $name = null)
+    public static function setDb(Database $connection, string $name = null): object
     {
         static::getDatabasesManager()->set($connection, $name);
         return static::instance();
@@ -84,7 +84,7 @@ trait AppDbsTrait
      * @throws DatabaseNotInitializedException
      * @return self
      */
-    public static function initDb(array $params = null, string $name = null)
+    public static function initDb(array $params = null, string $name = null): object
     {
         static::getDatabasesManager()->init($params, $name);
         return static::instance();
@@ -96,7 +96,7 @@ trait AppDbsTrait
      * @throws DatabaseNotInitializedException
      * @return Database
      */
-    public static function getDb(string $name = null)
+    public static function getDb(string $name = null): object
     {
         return static::getDatabasesManager()->get($name);
     }
@@ -108,7 +108,7 @@ trait AppDbsTrait
      * @throws DatabaseNotInitializedException
      * @return Database
      */
-    public static function db(string $name = null)
+    public static function db(string $name = null): object
     {
         try {
             return static::getDatabasesManager()->get($name);

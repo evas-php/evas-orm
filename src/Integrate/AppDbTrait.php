@@ -30,7 +30,7 @@ trait AppDbTrait
      * @param string
      * @return self
      */
-    public static function setDbClass(string $dbClass)
+    public static function setDbClass(string $dbClass): object
     {
         return static::set('dbClass', $dbClass);
     }
@@ -52,7 +52,7 @@ trait AppDbTrait
      * @param Database
      * @return self
      */
-    public static function setDb(Database $db)
+    public static function setDb(Database $db): object
     {
         return static::set('db', $db);
     }
@@ -62,7 +62,7 @@ trait AppDbTrait
      * @param array параметры соединения
      * @return self
      */
-    public static function initDb(array $params)
+    public static function initDb(array $params): object
     {
         $dbClass = static::getDbClass();
         return static::setDb(new $dbClass($params));
@@ -73,7 +73,7 @@ trait AppDbTrait
      * @throws DatabaseNotInitializedException
      * @return Database
      */
-    public static function getDb()
+    public static function getDb(): object
     {
         if (!static::has('db')) {
             throw new DatabaseNotInitializedException;
@@ -86,7 +86,7 @@ trait AppDbTrait
      * @throws DatabaseConfigNotFoundException
      * @return Database
      */
-    public static function db()
+    public static function db(): object
     {
         if (!static::has('db')) {
             static::initDb(static::getDbConfig());
