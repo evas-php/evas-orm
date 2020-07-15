@@ -1,6 +1,6 @@
 <?php
 /**
- * @package evas-php/evas-orm
+ * @package evas-php\evas-orm
  */
 namespace Evas\Orm\Builders\Exception;
 
