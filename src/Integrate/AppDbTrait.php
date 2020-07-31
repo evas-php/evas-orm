@@ -59,13 +59,13 @@ trait AppDbTrait
 
     /**
      * Инициализация соединения.
-     * @param array параметры соединения
+     * @param array|null параметры соединения
      * @return self
      */
-    public static function initDb(array $params): object
+    public static function initDb(array $params = null): object
     {
         $dbClass = static::getDbClass();
-        $params = array_merge(static::getDbConfig(), $params);
+        $params = array_merge(static::getDbConfig(), $params ?? []);
         return static::setDb(new $dbClass($params));
     }
 
