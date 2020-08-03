@@ -59,12 +59,12 @@ abstract class ActiveRecord extends OrmModel
     }
 
     /**
-     * Поиск записи.
-     * @param int|array|null значение первичного ключа или массив значений первичного ключа
-     * @return static|array|QueryBuilder
+     * Поиск записи по первичному ключу.
+     * @param int|string|array значение первичного ключа или массив значений первичного ключа
+     * @return static|array of static
      */
-    public static function find($id = null)
+    public static function findByPrimary($id)
     {
-        return static::baseFind(get_called_class(), $id);
+        return static::baseFindByPrimary(get_called_class(), $id);
     }
 }

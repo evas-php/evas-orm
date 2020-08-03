@@ -76,12 +76,12 @@ abstract class DataMapper extends OrmModel
     }
 
     /**
-     * Поиск записи.
-     * @param int|array|null значение первичного ключа или массив значений первичного ключа
-     * @return QueryBuilder|QueryResult|array
+     * Поиск записи по превичному ключу.
+     * @param int|string|array значение первичного ключа или массив значений первичного ключа
+     * @return static|array of static
      */
-    public static function find($id = null)
+    public static function findByPrimary($id)
     {
-        return static::baseFind(static::dataClassName(), $id);
+        return static::baseFindByPrimary(static::dataClassName(), $id);
     }
 }

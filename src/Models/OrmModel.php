@@ -244,23 +244,30 @@ abstract class OrmModel
     /**
      * Базовый поиск записи.
      * @param string имя класса сущности/сущностей
-     * @param int|string|array|null значение первичного ключа или массив значений первичного ключа
+     * @param int|string|array значение первичного ключа или массив значений первичного ключа
      * @return static|array|QueryBuilder
      */
-    public static function baseFind(string $className, $primary = null)
+    protected static function baseFindByPrimary(string $className, $primary)
     {
-        $qb = static::getDb()->select(static::tableName());
-        if (!empty($primary)) {
-            $primaryKey = static::primaryKey();
-            return is_array($primary) 
-                ? $qb->whereIn($primaryKey, $primary)
-                    ->query(count($primary))
-                    ->classObjectAll($className)
-                : $qb->where("$primaryKey = ?", [$primary])
-                    ->one()
-                    ->classObject($className);
-        }
-        return $qb;
+        $qb = static::find();
+        $primaryKey = static::primaryKey();
+        return is_array($primary) 
+            ? $qb->whereIn($primaryKey, $primary)
+                ->query(count($primary))
+                ->classObjectAll($className)
+            : $qb->where("$primaryKey = ?", [$primary])
+                ->one()
+                ->classObject($className);
+    }
+
+    /**
+     * Поиск записи.
+     * @param string|null столбцы
+     * @return QueryBuilder
+     */
+    public static function find(string $columns = null): QueryBuilder
+    {
+        return static::getDb()->select(static::tableName(), $columns);
     }
 
     /**
