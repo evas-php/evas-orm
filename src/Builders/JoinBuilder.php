@@ -45,6 +45,11 @@ class JoinBuilder
     public $on;
 
     /**
+     * @var string столбец склеивания
+     */
+    public $using;
+
+    /**
      * Конструктор.
      * @param QueryBuilder
      * @param string|null тип склейки INNER | LEFT | RIGHT | OUTER
@@ -61,9 +66,9 @@ class JoinBuilder
      * Установка склеиваемой таблицы.
      * @param string склеиваемая таблица или запрос записей склеиваемой таблицы
      * @param array|null значения для экранирования\
-     * @return $this
+     * @return self
      */
-    public function from(string $from, array $values = [])
+    public function from(string $from, array $values = []): JoinBuilder
     {
         $this->from = $from;
         return $this->bindValues($values);
@@ -72,9 +77,9 @@ class JoinBuilder
     /**
      * Установка псевдонима для склеиваемой таблицы.
      * @param string псевдоним
-     * @return $this
+     * @return self
      */
-    public function as(string $as)
+    public function as(string $as): JoinBuilder
     {
         $this->as = $as;
         return $this;
@@ -86,10 +91,21 @@ class JoinBuilder
      * @param string значения для экранирования
      * @return QueryBuilder
      */
-    public function on(string $on, array $values = [])
+    public function on(string $on, array $values = []): QueryBuilder
     {
         $this->on = $on;
         return $this->bindValues($values)->endJoin();
+    }
+
+    /**
+     * Установка столбца связывания.
+     * @param string столбец
+     * @return QueryBuilder
+     */
+    public function using(string $column): QueryBuilder
+    {
+        $this->using = $column;
+        return $this->endJoin();
     }
 
     /**
@@ -107,6 +123,9 @@ class JoinBuilder
         if (!empty($this->on)) {
             $sql .= " ON $this->on";
         }
+        if (!empty($this->using)) {
+            $sql .= " USING ($this->using)";
+        }
         return $sql;
     }
 
@@ -114,7 +133,7 @@ class JoinBuilder
      * Сборка join-части запроса и его установка в сборщик запроса.
      * @return QueryBuilder
      */
-    public function endJoin()
+    public function endJoin(): QueryBuilder
     {
         return $this->queryBuilder->setJoin($this->getSql(), $this->values());
     }
