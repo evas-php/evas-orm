@@ -5,6 +5,7 @@
 namespace Evas\Orm\Models;
 
 use Evas\Orm\Base\QueryResult;
+use Evas\Orm\Builders\QueryBuilder;
 use Evas\Orm\Database;
 
 /**
