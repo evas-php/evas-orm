@@ -213,6 +213,7 @@ abstract class OrmModel
             // get updated
             $values = static::getUpdated($object);
         }
+        if (empty($values)) return $object;
 
         if (null !== $primaryValue) {
             static::getDb()->update(static::tableName(), $values)
