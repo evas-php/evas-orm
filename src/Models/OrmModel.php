@@ -277,7 +277,7 @@ abstract class OrmModel
      * @param array|null значения запроса
      * @return QueryResult
      */
-    public static function findBySql(string $sql, array $values = null)
+    public static function findBySql(string $sql, array $values = null): QueryResult
     {
         return static::getDb()->query($sql, $values);
     }
