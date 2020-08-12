@@ -74,7 +74,7 @@ trait DatabaseBuildersTrait
     public function batchInsert(string $tbl, array $rows, array $columns): QueryResult
     {
         $ib = $this->insert($tbl);
-        if (!empty($columns)) $ib->key($columns);
+        if (!empty($columns)) $ib->keys($columns);
         return $ib->rows($rows)->query();
     }
 
