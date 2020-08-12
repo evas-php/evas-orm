@@ -138,6 +138,18 @@ abstract class OrmModel
         return array_diff($values, $state ?? []);
     }
 
+    /**
+     * Запуск хука.
+     * @param object объект
+     * @param string метод
+     */
+    public static function runHook(object &$object, string $method)
+    {
+        if (method_exists($object, $method)) {
+            $object->$method();
+        }
+    }
+
 
     // Базовая реализация операций с записями
 
@@ -204,6 +216,7 @@ abstract class OrmModel
      */
     public static function baseSave(object &$object, array $columns = null): object
     {
+        static::runHook($object, 'beforeSave');
         $primaryKey = static::primaryKey();
         $primaryValue = $object->$primaryKey;
         $values = [];
@@ -216,13 +229,18 @@ abstract class OrmModel
         if (empty($values)) return $object;
 
         if (null !== $primaryValue) {
+            static::runHook($object, 'beforeUpdate');
             static::getDb()->update(static::tableName(), $values)
                 ->where("$primaryKey = ?", [$primaryValue])->one();
+            static::runHook($object, 'afterUpdate');
         } else {
             unset($values[$primaryKey]);
+            static::runHook($object, 'beforeInsert');
             static::getDb()->insert(static::tableName(), $values);
             $object->$primaryKey = static::lastInsertId();
+            static::runHook($object, 'afterInsert');
         }
+        static::runHook($object, 'afterSave');
         return static::getDb()->identityMapUpdate($object, $primaryKey);
     }
 
@@ -233,11 +251,13 @@ abstract class OrmModel
      */
     public static function baseDelete(object &$object): QueryResult
     {
+        static::runHook($object, 'beforeDelete');
         $primaryKey = static::primaryKey();
         $primaryValue = $object->$primaryKey;
         $queryResult = static::getDb()->delete(static::tableName())
             ->where("$primaryKey = ?", [$primaryValue])->one();
         if (0 < $queryResult->rowCount()) {
+            static::runHook($object, 'afterDelete');
             static::getDb()->identityMapUnsetByObject($object, $primaryKey);
         }
         return $queryResult;
