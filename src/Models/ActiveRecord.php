@@ -65,6 +65,6 @@ abstract class ActiveRecord extends OrmModel
      */
     public static function findByPrimary($id)
     {
-        return static::baseFindByPrimary(get_called_class(), $id);
+        return static::baseFindByPrimary(static::class, $id);
     }
 }
