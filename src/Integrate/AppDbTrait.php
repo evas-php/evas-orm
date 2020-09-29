@@ -5,6 +5,7 @@
 namespace Evas\Orm\Integrate;
 
 use Evas\Orm\Database;
+use Evas\Orm\Base\Database as BaseDatabase;
 use Evas\Orm\Integrate\AppDbConfigTrait;
 use Evas\Orm\Integrate\Exception\DatabaseNotInitializedException;
 
@@ -49,10 +50,10 @@ trait AppDbTrait
 
     /**
      * Установка соединения.
-     * @param Database
+     * @param BaseDatabase
      * @return self
      */
-    public static function setDb(Database $db): object
+    public static function setDb(BaseDatabase $db): object
     {
         return static::set('db', $db);
     }
@@ -72,9 +73,9 @@ trait AppDbTrait
     /**
      * Получение соединения.
      * @throws DatabaseNotInitializedException
-     * @return Database
+     * @return BaseDatabase
      */
-    public static function getDb(): object
+    public static function getDb(): BaseDatabase
     {
         if (!static::has('db')) {
             throw new DatabaseNotInitializedException;
@@ -85,9 +86,9 @@ trait AppDbTrait
     /**
      * Получение соединения с автоинициализацией по конфигу.
      * @throws DatabaseConfigNotFoundException
-     * @return Database
+     * @return BaseDatabase
      */
-    public static function db(): object
+    public static function db(): BaseDatabase
     {
         if (!static::has('db')) {
             static::initDb();
