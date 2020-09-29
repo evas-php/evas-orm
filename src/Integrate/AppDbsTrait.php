@@ -5,9 +5,10 @@
 namespace Evas\Orm\Integrate;
 
 use Evas\Base\Helpers\PhpHelper;
-use Evas\Orm\Base\Database;
+use Evas\Orm\Base\Database as BaseDatabase;
+use Evas\Orm\Database;
 use Evas\Orm\DatabasesManager;
-use Evas\Orm\Integrate\AppDbConfigTrait;
+use Evas\Orm\Integrate\AppDbClassTrait;
 use Evas\Orm\Integrate\Exception\DatabaseConfigNotFoundException;
 use Evas\Orm\Integrate\Exception\DatabaseNotInitializedException;
 
@@ -26,9 +27,9 @@ if (!defined('EVAS_DATABASES_MANAGER_CLASS')) {
 trait AppDbsTrait
 {
     /**
-     * Подключаем трейт поддержки конфига базы данных.
+     * Подключаем трейт поддержки класса базы данных.
      */
-    use AppDbConfigTrait;
+    use AppDbClassTrait;
 
     /**
      * Установка класса менеджера баз данных.
@@ -69,19 +70,21 @@ trait AppDbsTrait
     public static function getDbsManager(): object
     {
         if (!static::has('dbs')) {
-            static::setDbsManager(new DatabasesManager);
+            $dbs = new static::getDbsManagerClass();
+            $dbs->databaseClass = static::getDbClass();
+            static::setDbsManager($dbs);
         }
         return static::get('dbs');
     }
 
     /**
      * Установка соединения.
-     * @param Database
+     * @param BaseDatabase
      * @param string|null имя соединения, если не задано подставляется dbname
      * @throws DatabaseNotInitializedException
      * @return self
      */
-    public static function setDb(Database $connection, string $name = null): object
+    public static function setDb(BaseDatabase $connection, string $name = null): object
     {
         static::getDbsManager()->set($connection, $name);
         return static::instance();
@@ -116,9 +119,9 @@ trait AppDbsTrait
      * @param string имя соединения
      * @throws DatabaseConfigNotFoundException
      * @throws DatabaseNotInitializedException
-     * @return Database
+     * @return BaseDatabase
      */
-    public static function db(string $name = null): object
+    public static function db(string $name = null): BaseDatabase
     {
         try {
             return static::getDbsManager()->get($name);
