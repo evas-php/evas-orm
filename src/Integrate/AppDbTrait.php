@@ -6,13 +6,8 @@ namespace Evas\Orm\Integrate;
 
 use Evas\Orm\Database;
 use Evas\Orm\Base\Database as BaseDatabase;
-use Evas\Orm\Integrate\AppDbConfigTrait;
+use Evas\Orm\Integrate\AppDbClassTrait;
 use Evas\Orm\Integrate\Exception\DatabaseNotInitializedException;
-
-/**
- * Константы для параметров соединения по умолчанию.
- */
-if (!defined('EVAS_DATABASE_CLASS')) define('EVAS_DATABASE_CLASS', Database::class);
 
 /**
  * Расширение поддержки базы данных приложения.
@@ -22,31 +17,9 @@ if (!defined('EVAS_DATABASE_CLASS')) define('EVAS_DATABASE_CLASS', Database::cla
 trait AppDbTrait
 {
     /**
-     * Подключаем трейт поддержки конфига базы данных.
+     * Подключаем трейт поддержки класса базы данных.
      */
-    use AppDbConfigTrait;
-
-    /**
-     * Установка класса базы данных.
-     * @param string
-     * @return self
-     */
-    public static function setDbClass(string $dbClass): object
-    {
-        return static::set('dbClass', $dbClass);
-    }
-
-    /**
-     * Получение класса базы данных.
-     * @param string
-     */
-    public static function getDbClass(): string
-    {
-        if (!static::has('dbClass')) {
-            static::set('dbClass', EVAS_DATABASE_CLASS);
-        }
-        return static::get('dbClass');
-    }
+    use AppDbClassTrait;
 
     /**
      * Установка соединения.
