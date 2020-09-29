@@ -5,6 +5,7 @@
 namespace Evas\Orm;
 
 use Evas\Base\Helpers\PhpHelper;
+use Evas\Orm\Base\Database as BaseDatabase;
 use Evas\Orm\Database;
 use Evas\Orm\Integrate\Exception\DatabaseNotInitializedException;
 
@@ -24,23 +25,24 @@ class DatabasesManager
      * @var string класс для соединения с базой данных.
      */
     public $databaseClass = EVAS_DATABASE_CLASS;
+    
     /**
      * @var array массив соединений с базами данных
      */
     public $connections = [];
 
     /**
-     * @var Database последнее выбранное соединение
+     * @var BaseDatabase последнее выбранное соединение
      */
     private $lastDatabase;
 
     /**
      * Установка соединения.
-     * @param Database
+     * @param BaseDatabase
      * @param string|null имя соединения, если не задано подставляется dbname
      * @return self
      */
-    public function set(Database $connection, string $name = null)
+    public function set(BaseDatabase $connection, string $name = null)
     {
         if (empty($name)) $name = $connection->name ?? $connection->dbname;
         $this->connections[$name] = &$connection;
@@ -68,9 +70,9 @@ class DatabasesManager
      * Получение соединения.
      * @param string имя соединения
      * @throws DatabaseNotInitializedException
-     * @return Database
+     * @return BaseDatabase
      */
-    public function get(string $name = null)
+    public function get(string $name = null): BaseDatabase
     {
         if (null === $name) {
             if (empty($this->lastDatabase)) {
@@ -88,9 +90,9 @@ class DatabasesManager
      * Поиск соединения по имени.
      * @param string имя
      * @throws DatabaseNotInitializedException
-     * @return Database
+     * @return BaseDatabase
      */
-    private function _findDatabase(string $name)
+    private function _findDatabase(string $name): BaseDatabase
     {
         $connection = $this->connections[$name] ?? null;
         if (null === $connection) {
