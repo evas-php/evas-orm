@@ -10,7 +10,7 @@ use Evas\Orm\Builders\DatabaseBuildersTrait;
 use Evas\Orm\Models\DatabaseIdentityMapTrait;
 use Evas\Orm\Models\DatabaseTableTrait;
 use Evas\Orm\QueryResult;
-use Evas\Orm\Scheme\DatabaseScheme;
+// use Evas\Orm\Scheme\DatabaseScheme;
 
 
 /**
