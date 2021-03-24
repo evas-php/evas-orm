@@ -137,7 +137,8 @@ class QueryResult
     public function classObjectAll(string $className): array
     {
         $this->stmt->setFetchMode(PDO::FETCH_CLASS, $className);
-        return $this->objectsHook($this->stmt->fetchAll());
+        $rows = $this->stmt->fetchAll();
+        return $this->objectsHook($rows);
     }
 
     /**
@@ -154,14 +155,40 @@ class QueryResult
 
     // Хуки
 
+    /**
+     * Проверка наличия хука.
+     * @param object объект
+     * @param string метод
+     * @return bool
+     */
+    public static function hasHook(object &$object, string $method): bool
+    {
+        return method_exists($object, $method) ? true : false;
+    }
+
+    /**
+     * Запуск хука.
+     * @param object объект
+     * @param string метод
+     */
+    public static function runHook(object &$object, string $method)
+    {
+        if (method_exists($object, $method)) {
+            $object->$method();
+        }
+    }
+
 
     /**
      * Хук для постобработки полученного объекта записи.
      * @param object|null запись
      * @return object|null постобработанная запись
      */
-    public function objectHook(object $row = null): ?object
+    public function objectHook(object &$row = null): ?object
     {
+        if (!empty($row) && is_object($row)) {
+            static::runHook($row, 'afterFind');
+        }
         return $row;
     }
 
@@ -170,8 +197,11 @@ class QueryResult
      * @param array|null записи
      * @return array|null постобработанные записи
      */
-    public function objectsHook(array $rows = null): ?array
+    public function objectsHook(array &$rows = null): ?array
     {
+        if (static::hasHook('afterFind')) foreach ($rows as &$row) {
+            $row = $this->objectHook($row);
+        }
         return $rows;
     }
 }
