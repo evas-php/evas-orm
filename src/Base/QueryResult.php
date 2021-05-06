@@ -184,7 +184,7 @@ class QueryResult
      * @param object|null запись
      * @return object|null постобработанная запись
      */
-    public function objectHook(object &$row = null): ?object
+    public function objectHook(object $row = null): ?object
     {
         if (!empty($row) && is_object($row)) {
             static::runHook($row, 'afterFind');
@@ -197,9 +197,9 @@ class QueryResult
      * @param array|null записи
      * @return array|null постобработанные записи
      */
-    public function objectsHook(array &$rows = null): ?array
+    public function objectsHook(array $rows = null): ?array
     {
-        if (static::hasHook('afterFind')) foreach ($rows as &$row) {
+        if ($rows) foreach ($rows as $row) {
             $row = $this->objectHook($row);
         }
         return $rows;

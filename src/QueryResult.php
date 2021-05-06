@@ -35,7 +35,7 @@ class QueryResult extends BaseQueryResult
      * @param object|null запись
      * @return object|null постобработанная запись
      */
-    public function objectHook(object &$row = null): ?object
+    public function objectHook(object $row = null): ?object
     {
         if (!empty($row) && is_object($row)) {
             $row = $this->identityMapHookUpdate($row);
@@ -48,7 +48,7 @@ class QueryResult extends BaseQueryResult
      * @param array|null записи
      * @return array|null постобработанные записи
      */
-    public function objectsHook(array &$rows = null): ?array
+    public function objectsHook(array $rows = null): ?array
     {
         if (!empty($rows)) foreach ($rows as &$row) {
             $row = $this->objectHook($row);
