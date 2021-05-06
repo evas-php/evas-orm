@@ -4,6 +4,7 @@
  */
 namespace Evas\Orm\Integrate;
 
+use Evas\Orm\Database;
 use Evas\Orm\Integrate\AppDbConfigTrait;
 
 /**
