@@ -6,8 +6,10 @@
  */
 namespace Evas\Orm;
 
-use Evas\Base\BaseApp;
+use Evas\Base\App;
 use Evas\Db\Interfaces\DatabaseInterface;
+use Evas\Db\Interfaces\QueryBuilderInterface;
+use Evas\Db\Table;
 use Evas\Orm\Exceptions\LastInsertIdUndefinedException;
 
 abstract class ActiveRecord
@@ -28,7 +30,7 @@ abstract class ActiveRecord
     public static function getDb(bool $write = false): DatabaseInterface
     {
         $dbname = static::getDbName($write);
-        return BaseApp::db($dbname);
+        return App::db($dbname);
     }
 
     /**
@@ -145,7 +147,7 @@ abstract class ActiveRecord
     public function fill(array $props = null): ActiveRecord
     {
         foreach ($props as $name => $value) {
-            $this->name = $value;
+            $this->$name = $value;
         }
         return $this;
     }
@@ -228,9 +230,7 @@ abstract class ActiveRecord
             $this->callMethodIfExists('afterUpdate');
         }
         $this->callMethodIfExists('afterSave');
-        // return $this;
         return static::getDb()->identityMapUpdate($this, $pk);
-        // return static::getDb()->identityMapUpdate($this, $this->$pk);
     }
 
     /**
@@ -238,7 +238,8 @@ abstract class ActiveRecord
      */
     public function delete()
     {
-        if (empty($this->pk)) {
+        $pk = static::primaryKey();
+        if (empty($this->$pk)) {
             $this->callMethodIfExists('nothingDelete');
             return $this;
         }
@@ -247,9 +248,10 @@ abstract class ActiveRecord
             ->where("$pk = ?", [$this->$pk])->one();
         if (0 < $qr->rowCount()) {
             static::getDb()->identityMapUnset($this, $pk);
-            // static::getDb()->identityMapUnset($this, $this->pk);
+            $this->id = null;
         }
         $this->callMethodIfExists('afterDelete', $qr->rowCount());
+        return $this;
     }
 
     /**
@@ -278,27 +280,36 @@ abstract class ActiveRecord
      */
     public static function find(): QueryBuilderInterface
     {
-        return static::getDb()->select(static::tableName());
+        return static::getDb()->select(static::tableName())->bindObjectClass(static::class);
     }
 
     /**
      * Поиск по первичному ключу.
-     * @param int|string|array значение первичного ключа или массив значений
+     * @param int|string значение первичного ключа, перечисление
      * @return static|array of static
      */
-    public static function findByPK($id)
+    public static function findByPK(...$ids)
     {
         $pk = static::primaryKey();
         $qb = static::find();
-        if (is_array($id) && 1 < count($id)) {
-            return $qb->whereIn("`$pk`", $id)
-            ->query(count($id))->classObjectAll(static::class);
+        if (count($ids) > 1) {
+            return $qb->whereIn("`$pk`", $ids)
+            ->query(count($ids))->classObjectAll(static::class);
         } else {
-            if (is_array($id)) $id = $id[0];
-            return $qb->where("`$pk` = ?", [$id])
+            return $qb->where("`$pk` = ?", $ids)
             ->one()->classObject(static::class);
         }
     }
+
+    /**
+     * Поиск по id, алиас для findByPK.
+     * @param int id, перечисление
+     * @return static|array of static
+     */
+     public static function findById(int ...$ids)
+     {
+        return static::findByPK(...$ids);
+     }
 
     /**
      * Поиск записи по sql-запросу.
