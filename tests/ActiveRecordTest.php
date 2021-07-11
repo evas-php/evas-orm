@@ -30,7 +30,6 @@ use Evas\Orm\tests\ActiveRecordTest\Auth;
 use Evas\Db\tests\help\DatabaseTestUnit;
 
 // Устанавливаем конфиг DI.
-App::di()->loadDefinitions(__DIR__ . '/help/di_tests_config.php');
 
 /**
  * Тест ActiveRecord.
@@ -48,6 +47,16 @@ class ActiveRecordTest extends DatabaseTestUnit
         'name' => 'Updated name',
         'email' => 'Updated email',
     ];
+
+    protected function _before()
+    {
+        if (!App::di()->has('db')) {
+            App::di()->loadDefinitions(
+                __DIR__ . '/_config/di_tests_config.php'
+            );
+        }
+        parent::_before();
+    }
 
     protected function _after()
     {
