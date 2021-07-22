@@ -1,4 +1,9 @@
 <?php
+/**
+ * Тест Active Record.
+ * @package evas-php/evas-base
+ * @author Egor Vasyakin <egor@evas-php.com>
+ */
 namespace Evas\Orm\tests;
 use Codeception\Util\Autoload;
 
