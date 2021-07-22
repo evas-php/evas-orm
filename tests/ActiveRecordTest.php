@@ -4,9 +4,10 @@ use Codeception\Util\Autoload;
 
 Autoload::addNamespace('Evas\\Base', 'vendor/evas-php/evas-base/src');
 Autoload::addNamespace('Evas\\Db', 'vendor/evas-php/evas-db/src');
-Autoload::addNamespace('Evas\\Db\\tests\\help', 'vendor/evas-php/evas-db/tests/help');
 Autoload::addNamespace('Evas\\Orm', 'vendor/evas-php/evas-orm/src');
-Autoload::addNamespace('Evas\\Orm\\tests\\help', 'vendor/evas-php/evas-orm/tests/help');
+
+Autoload::addNamespace('Evas\\Db\\tests', 'vendor/evas-php/evas-db/tests');
+Autoload::addNamespace('Evas\\Orm\\tests', 'vendor/evas-php/evas-orm/tests');
 
 namespace Evas\Orm\tests\ActiveRecordTest;
 use Evas\Orm\ActiveRecord;
