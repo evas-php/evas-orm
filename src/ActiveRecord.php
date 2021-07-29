@@ -7,6 +7,7 @@
 namespace Evas\Orm;
 
 use Evas\Base\App;
+use Evas\Base\Help\HooksTrait;
 use Evas\Db\Interfaces\DatabaseInterface;
 use Evas\Db\Interfaces\QueryBuilderInterface;
 use Evas\Db\Table;
@@ -14,6 +15,9 @@ use Evas\Orm\Exceptions\LastInsertIdUndefinedException;
 
 abstract class ActiveRecord
 {
+    // подключаем поддержку произвольных хуков в наследуемых классах
+    use HooksTrait;
+
     /** @var string имя соединения с базой данных*/
     public static $dbname;
     /** @var string имя соединения с базой данных только для записи */
@@ -184,21 +188,6 @@ abstract class ActiveRecord
         }
     }
 
-    /**
-     * Вызов метода при наличии. Для хуков событий.
-     * @param string имя метода
-     * @param mixed аргумент метода
-     */
-    private function callMethodIfExists(string $methodName, ...$methodArgs)
-    {
-        if (defined('EVAS_DEBUG') && true == EVAS_DEBUG) {
-            echo $methodName . ('cli' == PHP_SAPI ? "\n" : '<br>');
-        }
-        if (method_exists($this, $methodName)) {
-            call_user_func_array([$this, $methodName], $methodArgs);
-        }
-    }
-
 
     /**
      * Сохранение записи.
@@ -209,27 +198,27 @@ abstract class ActiveRecord
     {
         $props = $this->getUpdatedProperties();
         if (empty($props)) {
-            $this->callMethodIfExists('nothingSave');
+            $this->hook('nothingSave');
             return $this;
         }
 
-        $this->callMethodIfExists('beforeSave');
+        $this->hook('beforeSave');
         $pk = static::primaryKey();
         if (empty($this->$pk)) {
-            $this->callMethodIfExists('beforeInsert');
+            $this->hook('beforeInsert');
             static::getDb(true)->insert(static::tableName(), $props);
             $this->$pk = static::lastInsertId();
             if (empty($this->$pk)) {
                 throw new LastInsertIdUndefinedException();
             }
-            $this->callMethodIfExists('afterInsert');
+            $this->hook('afterInsert');
         } else {
-            $this->callMethodIfExists('beforeUpdate');
+            $this->hook('beforeUpdate');
             static::getDb(true)->update(static::tableName(), $props)
                 ->where("$pk = ?", [$this->$pk])->one();
-            $this->callMethodIfExists('afterUpdate');
+            $this->hook('afterUpdate');
         }
-        $this->callMethodIfExists('afterSave');
+        $this->hook('afterSave');
         return static::getDb()->identityMapUpdate($this, $pk);
     }
 
@@ -240,17 +229,17 @@ abstract class ActiveRecord
     {
         $pk = static::primaryKey();
         if (empty($this->$pk)) {
-            $this->callMethodIfExists('nothingDelete');
+            $this->hook('nothingDelete');
             return $this;
         }
-        $this->callMethodIfExists('beforeDelete');
+        $this->hook('beforeDelete');
         $qr = static::getDb(true)->delete(static::tableName())
             ->where("$pk = ?", [$this->$pk])->one();
         if (0 < $qr->rowCount()) {
             static::getDb()->identityMapUnset($this, $pk);
             $this->id = null;
         }
-        $this->callMethodIfExists('afterDelete', $qr->rowCount());
+        $this->hook('afterDelete', $qr->rowCount());
         return $this;
     }
 
