@@ -2,7 +2,7 @@
     "name": "evas-php/evas-orm",
     "description": "ORM module (Database, QueryResult, Builders, Table, ActiveRecord, DataMapper, IdentityMap, App intagrate traits)",
     "keywords": ["orm", "db", "database", "active record", "data mapper", "query builder", "evas-php"],
-    "version": "1.0",
+    "version": "1.1",
     "type": "library",
     "license": "CC-BY-4.0",
     "authors": [
