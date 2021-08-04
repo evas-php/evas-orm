@@ -269,7 +269,7 @@ abstract class ActiveRecord
      */
     public static function find(): QueryBuilderInterface
     {
-        return static::getDb()->select(static::tableName())->bindObjectClass(static::class);
+        return static::getDb()->select(static::tableName());
     }
 
     /**
