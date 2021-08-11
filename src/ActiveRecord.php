@@ -148,7 +148,7 @@ abstract class ActiveRecord
      * @param array свойства модели
      * @return self
      */
-    public function fill(array $props = null): ActiveRecord
+    public function fill(array $props): ActiveRecord
     {
         foreach ($props as $name => $value) {
             $this->$name = $value;
