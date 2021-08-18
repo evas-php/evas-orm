@@ -173,6 +173,21 @@ abstract class ActiveRecord
     }
 
     /**
+     * Получение состояния сохраняемых полей.
+     * @return array
+     */
+    public function getState(): array
+    {
+        $state = static::getDb()->identityMapGetState($this, static::primaryKey());
+        foreach ($state as $name => &$value) {
+            if (!in_array($name, static::columns())) {
+                unset($state[$name]);
+            }
+        }
+        return $state;
+    }
+
+    /**
      * Получение маппинга измененных свойств записи.
      * @return array
      */
@@ -183,7 +198,8 @@ abstract class ActiveRecord
         if (empty($this->$pk)) {
             return $props;
         } else {
-            $state = static::getDb()->identityMapGetState($this, $pk);
+            // $state = static::getDb()->identityMapGetState($this, $pk);
+            $state = $this->getState();
             // return array_diff($props, $state ?? []);
             return array_merge(
                 array_fill_keys(array_keys(array_diff($state ?? [], $props)), null),
