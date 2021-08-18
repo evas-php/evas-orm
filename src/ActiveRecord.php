@@ -184,7 +184,11 @@ abstract class ActiveRecord
             return $props;
         } else {
             $state = static::getDb()->identityMapGetState($this, $pk);
-            return array_diff($props, $state ?? []);
+            // return array_diff($props, $state ?? []);
+            return array_merge(
+                array_fill_keys(array_keys(array_diff($state ?? [], $props)), null),
+                array_diff($props, $state ?? [])
+            );
         }
     }
 
@@ -196,8 +200,7 @@ abstract class ActiveRecord
      */
     public function save()
     {
-        $props = $this->getUpdatedProperties();
-        if (empty($props)) {
+        if (empty($this->getUpdatedProperties())) {
             $this->hook('nothingSave');
             return $this;
         }
@@ -206,7 +209,7 @@ abstract class ActiveRecord
         $pk = static::primaryKey();
         if (empty($this->$pk)) {
             $this->hook('beforeInsert');
-            static::getDb(true)->insert(static::tableName(), $props);
+            static::getDb(true)->insert(static::tableName(), $this->getUpdatedProperties());
             $this->$pk = static::lastInsertId();
             if (empty($this->$pk)) {
                 throw new LastInsertIdUndefinedException();
@@ -214,7 +217,7 @@ abstract class ActiveRecord
             $this->hook('afterInsert');
         } else {
             $this->hook('beforeUpdate');
-            static::getDb(true)->update(static::tableName(), $props)
+            static::getDb(true)->update(static::tableName(), $this->getUpdatedProperties())
                 ->where("$pk = ?", [$this->$pk])->one();
             $this->hook('afterUpdate');
         }
