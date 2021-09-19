@@ -201,9 +201,10 @@ abstract class ActiveRecord
             // $state = static::getDb()->identityMapGetState($this, $pk);
             $state = $this->getState();
             // return array_diff($props, $state ?? []);
+
             return array_merge(
                 array_fill_keys(array_keys(array_diff($state ?? [], $props)), null),
-                array_diff($props, $state ?? [])
+                array_diff_assoc($props, $state ?? [])
             );
         }
     }
