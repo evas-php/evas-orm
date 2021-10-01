@@ -192,7 +192,7 @@ abstract class ActiveRecord
     {
         $state = static::getDb()->identityMapGetState($this, static::primaryKey());
         foreach ($state as $name => &$value) {
-            if (!in_array($name, static::columns())) {
+            if (!isset($value) || !in_array($name, static::columns())) {
                 unset($state[$name]);
             }
         }
