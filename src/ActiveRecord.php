@@ -140,7 +140,19 @@ abstract class ActiveRecord
      */
     public function __construct(array $props = null)
     {
+        $this->hook('beforeConstruct');
+        
+        $pk = static::primaryKey();
+        $creating = empty($props[$pk]);
+        
+        if ($creating) $this->hook('beforeCreate');
+        else $this->hoot('beforeGet');
+
         if (!empty($props)) $this->fill($props);
+        
+        if ($creating) $this->hook('afterCreate');
+        else $this->hoot('afterGet');
+        $this->hook('afterConstruct');
     }
 
     /**
