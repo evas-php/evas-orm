@@ -297,11 +297,12 @@ abstract class ActiveRecord
 
     /**
      * Поиск записи через сборщик запроса.
+     * @param string|null столбцы
      * @return QueryBuilderInterface
      */
-    public static function find(): QueryBuilderInterface
+    public static function find(string $columns = null): QueryBuilderInterface
     {
-        return static::getDb()->select(static::tableName());
+        return static::getDb()->select(static::tableName(), $columns);
     }
 
     /**
