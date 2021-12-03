@@ -267,11 +267,11 @@ abstract class ActiveRecord
         $this->hook('beforeDelete');
         $qr = static::getDb(true)->delete(static::tableName())
             ->where("$pk = ?", [$this->$pk])->one();
+        $this->hook('afterDelete', $qr->rowCount());
         if (0 < $qr->rowCount()) {
             static::getDb()->identityMapUnset($this, $pk);
             $this->id = null;
         }
-        $this->hook('afterDelete', $qr->rowCount());
         return $this;
     }
 
