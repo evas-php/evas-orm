@@ -146,12 +146,12 @@ abstract class ActiveRecord
         $creating = empty($props[$pk]);
         
         if ($creating) $this->hook('beforeCreate', $props);
-        else $this->hoot('beforeGet', $props);
+        else $this->hook('beforeGet', $props);
 
         if (!empty($props)) $this->fill($props);
         
         if ($creating) $this->hook('afterCreate');
-        else $this->hoot('afterGet');
+        else $this->hook('afterGet');
         $this->hook('afterConstruct');
     }
 
