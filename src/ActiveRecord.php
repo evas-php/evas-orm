@@ -334,12 +334,12 @@ abstract class ActiveRecord
      }
 
     /**
-     * Поиск записи по sql-запросу.
+     * Поиск по sql-запросу.
      * @param string sql-запрос
      * @param array|null значения запроса для экранирования
      * @return static|static[]
      */
-    public static function findBySql(string $sql, array $values = null)
+    public static function query(string $sql, array $values = null)
     {
         $qr = static::getDb()->query($sql, $values);
         return strstr($qr->stmt()->queryString, 'LIMIT 1') 
