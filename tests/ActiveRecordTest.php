@@ -292,7 +292,7 @@ class ActiveRecordTest extends DatabaseTestUnit
     /**
      * Тест поиска по sql.
      */
-    public function testFindSql()
+    public function testQuery()
     {
         $this->assertEmpty(User::find()->query()->rowCount());
         $insertedUser1 = $this->insertUser();
@@ -301,12 +301,12 @@ class ActiveRecordTest extends DatabaseTestUnit
         $this->assertEquals(2, User::table()->maxId());
         $this->assertEquals(2, User::find()->query()->rowCount());
 
-        $findedUser = User::findBySql('SELECT * FROM `users` WHERE id = ? LIMIT 1', [1]);
+        $findedUser = User::query('SELECT * FROM `users` WHERE id = ? LIMIT 1', [1]);
         $this->assertNotEmpty($findedUser);
         $this->assertEquals($findedUser, $insertedUser1);
         $this->assertEquals(spl_object_hash($findedUser), spl_object_hash($insertedUser1));
 
-        $findedUsers = User::findBySql('SELECT * FROM `users`');
+        $findedUsers = User::query('SELECT * FROM `users`');
         $this->assertNotEmpty($findedUsers);
         $this->assertEquals($findedUsers[0], $insertedUser1);
         $this->assertEquals($findedUsers[0], $findedUser);
