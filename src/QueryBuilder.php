@@ -96,9 +96,13 @@ class QueryBuilder extends DbQueryBuilder
      */
     public function get($columns = null): ?array
     {
+        $this->result = [];
         $this->applyWiths();
         $rows = parent::get($columns);
-        return (count($this->aggregates) < 1 && count($this->groups) < 1 && count($this->withs) >= count($this->joins)) 
+        return (
+            count($this->aggregates) < 1 && count($this->groups) < 1 
+            && count($this->withs) >= count($this->joins)
+        ) 
         ? $this->prepareGetResult($rows)
         : $rows;
     }
@@ -110,17 +114,28 @@ class QueryBuilder extends DbQueryBuilder
      */
     public function one($columns = null): ?ActiveRecord
     {
+        $this->result = [];
         if (count($this->withs)) {
-            $rows = $this->get($columns);
+            $rows = $this->limit(1)->get($columns);
             return count($rows) ? $rows[0] : null;
         }
         $row = parent::one($columns);
-        return $row ? $this->prepareOneResult($row) : null;
+        return $this->prepareOneResult($row);
     }
 
     protected function applyWiths()
     {
         if (count($this->withs)) {
+            if ($this->limit) {
+                // $this->fromSub(function ($query) {
+                //     $query->from($this->from)->limit($this->limit);
+                // }, $this->from);
+                // $this->fromSub($this->getSql(), $this->from);
+                $this->fromSub($this, $this->from);
+                $this->bindings['where'] = [];
+                $this->wheres = [];
+                $this->limit(null);
+            }
             $columns = static::prepareModelColumns($this->columns, $this->model);
             $this->addSelect($columns);
             foreach ($this->withs as [$relation, $columns, $query]) {
