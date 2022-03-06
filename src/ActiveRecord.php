@@ -24,9 +24,6 @@ abstract class ActiveRecord implements JsonSerializable
     // подключаем поддержку связей
     use RelationsTrait;
 
-    // подключаем методы сборщика запросов
-    // use ActiveRecordBuilderTrait;
-
     /** @var string имя соединения с базой данных */
     public static $dbname;
     /** @var string имя соединения с базой данных только для записи */
@@ -342,7 +339,7 @@ abstract class ActiveRecord implements JsonSerializable
      */
     public static function find($ids)
     {
-        $ids = is_array($ids) ? $ids : func_get_args();
+        $ids = func_num_args() > 1 ? func_get_args() : $ids;
         $db = static::getDb();
         return (new QueryBuilder($db, static::class))->find($ids);
     }
