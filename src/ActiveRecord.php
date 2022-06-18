@@ -214,6 +214,15 @@ abstract class ActiveRecord implements JsonSerializable
     }
 
     /**
+     * Проверка наличия значения первичного ключа записи в состоянии.
+     * @return bool
+     */
+    protected function hasPrimaryValueInState(): bool
+    {
+        return isset($this->getState()[static::primaryKey()]);
+    }
+
+    /**
      * Получение маппинга измененных свойств записи.
      * @return array
      */
@@ -249,7 +258,12 @@ abstract class ActiveRecord implements JsonSerializable
 
         $this->hook('beforeSave');
         $pk = static::primaryKey();
-        if (empty($this->$pk)) {
+        if ($this->hasPrimaryValueInState()) {
+            $this->hook('beforeUpdate');
+            static::getDb(true)->table(static::tableName())
+                ->where($pk, $this->$pk)->update($this->getUpdatedProperties());
+            $this->hook('afterUpdate');
+        } else {
             $this->hook('beforeInsert');
             static::getDb(true)->insert(static::tableName(), $this->getUpdatedProperties());
             $this->$pk = static::lastInsertId();
@@ -257,11 +271,6 @@ abstract class ActiveRecord implements JsonSerializable
                 throw new LastInsertIdUndefinedException();
             }
             $this->hook('afterInsert');
-        } else {
-            $this->hook('beforeUpdate');
-            static::getDb(true)->table(static::tableName())
-                ->where($pk, $this->$pk)->update($this->getUpdatedProperties());
-            $this->hook('afterUpdate');
         }
         $this->hook('afterSave');
         return static::getDb()->identityMapUpdate($this, $pk);
