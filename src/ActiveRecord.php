@@ -297,7 +297,7 @@ abstract class ActiveRecord implements JsonSerializable
         $this->hook('afterDelete', $qr->rowCount());
         if (0 < $qr->rowCount()) {
             static::getDb()->identityMapUnset($this, $pk);
-            $this->id = null;
+            $this->$pk = null;
         }
         return $this;
     }
@@ -309,7 +309,7 @@ abstract class ActiveRecord implements JsonSerializable
     {
         $pv = $this->primaryValue();
         if (!$pv) return;
-        $this->fill(static::find($pv));
+        $this->fill((array) static::find($pv));
     }
 
     /**
