@@ -1,6 +1,6 @@
 <?php
 /**
- * Модель данных Active Record.
+ * Модель данных ActiveRecord.
  * @package evas-php\evas-orm
  * @author Egor Vasyakin <egor@evas-php.com>
  */

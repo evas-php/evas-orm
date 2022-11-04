@@ -1,6 +1,6 @@
 <?php
 /**
- * Трейт соединения базы данных для Active Record.
+ * Трейт соединения базы данных для ActiveRecord.
  * @package evas-php\evas-orm
  * @author Egor Vasyakin <egor@evas-php.com>
  */

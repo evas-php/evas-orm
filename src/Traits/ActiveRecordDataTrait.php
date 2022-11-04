@@ -1,6 +1,6 @@
 <?php
 /**
- * Трейт работы с данными Active Record.
+ * Трейт работы с данными ActiveRecord.
  * @package evas-php\evas-orm
  * @author Egor Vasyakin <egor@evas-php.com>
  */

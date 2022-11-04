@@ -1,6 +1,6 @@
 <?php
 /**
- * Трейт таблицы для Active Record.
+ * Трейт таблицы для ActiveRecord.
  * @package evas-php\evas-orm
  * @author Egor Vasyakin <egor@evas-php.com>
  */
