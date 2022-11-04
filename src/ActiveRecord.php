@@ -39,8 +39,9 @@ class ActiveRecord implements \JsonSerializable
      */
     public function __construct(array $props = null)
     {
+        $creating = empty($this->primaryValue());
+        if (!$creating) $this->saveState();
         $this->hook('beforeConstruct', $props);
-        $creating = empty($props[static::primaryKey()]);
 
         $this->hook($creating ? 'beforeCreate' : 'beforeGet', $props);
         if (!empty($props)) $this->fill($props);
@@ -62,22 +63,22 @@ class ActiveRecord implements \JsonSerializable
             return $this;
         }
 
-        $this->hook('beforeSave');
+        $this->hook('beforeSave', $props);
         $pk = static::primaryKey();
         if ($this->isStateHasPrimaryValue()) {
-            $this->hook('beforeUpdate');
+            $this->hook('beforeUpdate', $props);
             static::table(true)->where($pk, $this->$pk)->update($props);
-            $this->hook('afterUpdate');
+            $this->hook('afterUpdate', $props);
         } else {
-            $this->hook('beforeInsert');
+            $this->hook('beforeInsert', $props);
             static::table(true)->insert($props);
             $this->$pk = static::lastInsertId();
             if (empty($this->$pk)) {
                 throw new LastInsertIdUndefinedException();
             }
-            $this->hook('afterInsert');
+            $this->hook('afterInsert', $props);
         }
-        $this->hook('afterSave');
+        $this->hook('afterSave', $props);
         // return static::getDb()->identityMapUpdate($this, $pk);
         return $this->saveState();
     }
