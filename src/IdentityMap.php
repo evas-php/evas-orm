@@ -6,7 +6,7 @@ use Evas\Orm\Identity\ModelIdentity;
 class IdentityMap
 {
     protected static $instance;
-    protected $models;
+    protected $models = [];
 
 
     public static function instance()
@@ -22,23 +22,18 @@ class IdentityMap
 
     public function resetModels()
     {
-        $this->models = new \WeakMap;
+        $this->models = [];
         return $this;
     }
 
     public static function count(): int
     {
-        return static::models()->count();
-    }
-
-    public static function models()
-    {
-        return static::instance()->models;
+        return count(static::instance()->models);
     }
 
     public static function has($identity)
     {
-        return static::models()->offsetExists($identity);
+        return isset(static::instance()->models[(string) $identity]);
     }
 
     public static function set($identity, $model = null)
@@ -46,14 +41,13 @@ class IdentityMap
         if (func_num_args() < 2) {
             [$model, $identity] = [$identity, $identity->identity()];
         }
-        // $state = $model->toArray();
-        static::models()->offsetSet($identity, $model);
+        static::instance()->models[(string) $identity] = $model;
         return static::instance();
     }
 
     public static function get($identity)
     {
-        return static::models()->offsetGet($identity);
+        return static::instance()->models[(string) $identity] ?? null;
     }
 
     public static function getOrSet($identity, $model = null)
@@ -63,13 +57,26 @@ class IdentityMap
         }
         if (!static::has($identity)) {
             static::set($identity, $model);
+            return $model;
+        } else {
+            $old = static::get($identity);
+            /** @todo Sync state */
+            $props = $old->getUpdatedProps();
+            $old->fill($model->getData());
+            $old->saveState();
+            var_dump($props);
+            foreach ($props as $name => $value) {
+                $old->$name = $value;
+            }
+            $old->saveState();
+            return $old;
         }
-        return static::get($identity);
+        // return static::get($identity);
     }
 
     public static function unset($identity)
     {
-        static::models()->offsetUnset($identity);
+        unset(static::instance()->models[(string) $identity]);
         return static::instance();
     }
 
