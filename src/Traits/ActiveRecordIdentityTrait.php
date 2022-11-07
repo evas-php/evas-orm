@@ -23,11 +23,6 @@ trait ActiveRecordIdentityTrait
 
     public function identityMapSave()
     {
-        // echo '<pre>';
-        echo dumpOrm($this->identity());
-        echo dumpOrm(spl_object_id($this->identity()));
-        echo dumpOrm(IdentityMap::has($this->identity()));
-        // echo '</pre>';
         return IdentityMap::getOrSet($this);
     }
 
