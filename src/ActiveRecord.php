@@ -114,8 +114,9 @@ class ActiveRecord implements \JsonSerializable
         $qr = static::table(true)->where($pk, $this->$pk)->limit(1)->delete();
         $this->hook('afterDelete', $qr->rowCount());
         if (0 < $qr->rowCount()) {
-            // static::getDb()->identityMapUnset($this, $pk);
+            $this->identityMapRemove();
             $this->$pk = null;
+            $this->saveState();
         }
         return $this;
     }
@@ -126,8 +127,8 @@ class ActiveRecord implements \JsonSerializable
     public function reload()
     {
         return ($pv = $this->primaryValue())
-        ? static::find($pv)
-        // ? $this->fill((array) static::find($pv))
+        // ? static::find($pv)
+        ? $this->fill(static::find($pv)->toArray())
         : $this;
     }
 }
