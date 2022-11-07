@@ -125,8 +125,9 @@ class ActiveRecord implements \JsonSerializable
      */
     public function reload()
     {
-        $pv = $this->primaryValue();
-        if (!$pv) return;
-        $this->fill((array) static::find($pv));
+        return ($pv = $this->primaryValue())
+        ? static::find($pv)
+        // ? $this->fill((array) static::find($pv))
+        : $this;
     }
 }
