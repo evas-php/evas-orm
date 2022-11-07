@@ -62,7 +62,11 @@ class QueryBuilder extends DbQueryBuilder
     public function get($columns = null): array
     {
         if ($columns) $this->addSelect(...func_get_args());
-        return $this->query()->objectAll($this->model);
+        $result = $this->query()->objectAll($this->model);
+        foreach ($result as &$model) {
+            $model = $model->identityMapSave();
+        }
+        return $result;
     }
 
      /**
@@ -73,6 +77,7 @@ class QueryBuilder extends DbQueryBuilder
     public function one($columns = null)
     {
         if ($columns) $this->addSelect(...func_get_args());
-        return $this->limit(1)->query()->object($this->model);
+        $model = $this->limit(1)->query()->object($this->model);
+        return $model->identityMapSave();
     }
 }

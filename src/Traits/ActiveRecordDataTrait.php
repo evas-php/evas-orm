@@ -68,11 +68,11 @@ trait ActiveRecordDataTrait
      */
     public function __get(string $name)
     {
-        if (static::hasRelation($name)) {
-            return $this->getRelatedCollection($name);
-        } else {
+        // if (static::hasRelation($name)) {
+        //     return $this->getRelatedCollection($name);
+        // } else {
             return $this->modelData[$name] ?? null;
-        }
+        // }
     }
 
     /**

@@ -3,12 +3,11 @@ namespace Evas\Orm\Identity;
 
 class ModelIdentity
 {
-    public readonly ?string $dbname = null;
-    public readonly string $class;
-    public readonly $id;
+    protected ?string $dbname;
+    protected string $class;
+    protected $id;
 
-    public function __construct(string $class, $id, ?string $dbname = null)
-    {
+    public function __construct(string $class, $id, ?string $dbname = null) {
         $this->dbname = $dbname;
         $this->class = $class;
         $this->id = $id;
@@ -17,5 +16,12 @@ class ModelIdentity
     public function __toString()
     {
         return implode(':', [$this->dbname, $this->class, $this->id]);
+    }
+
+    public static function createFromModel(object $model)
+    {
+        return ($id = $model->primaryValue()) 
+        ? new static(get_class($model), $id, $model::getDbName())
+        : null;
     }
 }

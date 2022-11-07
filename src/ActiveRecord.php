@@ -15,6 +15,9 @@ use Evas\Orm\Traits\ActiveRecordStateTrait;
 use Evas\Orm\Traits\ActiveRecordTableTrait;
 use Evas\Orm\Traits\ActiveRecordQueryTrait;
 
+use Evas\Orm\Traits\ActiveRecordIdentityTrait;
+
+
 class ActiveRecord implements \JsonSerializable
 {
     // подключаем конвертацию
@@ -32,6 +35,8 @@ class ActiveRecord implements \JsonSerializable
 
     // подключаем поддержку произвольных хуков в наследуемых классах
     use HooksTrait;
+
+    use ActiveRecordIdentityTrait;
 
     /**
      * Конструктор.

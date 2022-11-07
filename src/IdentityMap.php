@@ -17,40 +17,69 @@ class IdentityMap
 
     protected function __construct()
     {
-        $this->unsetAll();
+        $this->resetModels();
     }
 
-    public function has($model)
-    {
-        return $this->models->offsetExists($model);
-    }
-
-    public function set($model)
-    {
-        $state = $model->toArray();
-        $this->models->offsetSet($model, $state);
-        return $this;
-    }
-
-    public function get($model)
-    {
-        return $this->models->offsetGet($model);
-    }
-
-    public function unset($model)
-    {
-        $this->models->offsetUnset($model);
-        return $this;
-    }
-
-    public function unsetAll()
+    public function resetModels()
     {
         $this->models = new \WeakMap;
         return $this;
     }
 
+    public static function count(): int
+    {
+        return static::models()->count();
+    }
+
+    public static function models()
+    {
+        return static::instance()->models;
+    }
+
+    public static function has($identity)
+    {
+        return static::models()->offsetExists($identity);
+    }
+
+    public static function set($identity, $model = null)
+    {
+        if (func_num_args() < 2) {
+            [$model, $identity] = [$identity, $identity->identity()];
+        }
+        // $state = $model->toArray();
+        static::models()->offsetSet($identity, $model);
+        return static::instance();
+    }
+
+    public static function get($identity)
+    {
+        return static::models()->offsetGet($identity);
+    }
+
+    public static function getOrSet($identity, $model = null)
+    {
+        if (func_num_args() < 2) {
+            [$model, $identity] = [$identity, $identity->identity()];
+        }
+        if (!static::has($identity)) {
+            static::set($identity, $model);
+        }
+        return static::get($identity);
+    }
+
+    public static function unset($identity)
+    {
+        static::models()->offsetUnset($identity);
+        return static::instance();
+    }
+
+    public static function unsetAll()
+    {
+        static::instance()->resetModels();
+    }
+
     public function __toString()
     {
-        return json_encode(["models" => $this->models]);
+        return json_encode(["models_count" => static::count()]);
     }
 }
