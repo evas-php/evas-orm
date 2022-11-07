@@ -44,12 +44,21 @@ class IdentityMap
     }
 
     /**
-     * Получение количества моделей.
+     * Получение количества моделей в IdentityMap.
      * @return int
      */
     public static function count(): int
     {
         return count(static::instance()->models);
+    }
+
+    /**
+     * Получение моделей IdentityMap.
+     * @return array
+     */
+    public static function models(): array
+    {
+        return static::instance()->models;
     }
 
     /**
@@ -130,6 +139,6 @@ class IdentityMap
      */
     public function __toString()
     {
-        return json_encode(["models_count" => static::count()]);
+        return json_encode(['models_count' => static::count(), 'models' => $this->models]);
     }
 }
