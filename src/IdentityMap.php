@@ -2,6 +2,7 @@
 namespace Evas\Orm;
 
 use Evas\Orm\Identity\ModelIdentity;
+use Evas\Orm\ActiveRecord;
 
 class IdentityMap
 {
@@ -13,6 +14,18 @@ class IdentityMap
     {
         if (!static::$instance) static::$instance = new static;
         return static::$instance;
+    }
+
+    protected static function getIdentity($identity, $model = null)
+    {
+        if (func_num_args() > 1 && $model instanceof ActiveRecord) {
+            return [$identity, $model];
+        }
+        if ($identity instanceof ActiveRecord) {
+            return [$identity->identity(), $identity];
+        } else {
+            return [$identity];
+        }
     }
 
     protected function __construct()
@@ -33,49 +46,43 @@ class IdentityMap
 
     public static function has($identity)
     {
+        @[$identity] = static::getIdentity($identity);
         return isset(static::instance()->models[(string) $identity]);
     }
 
     public static function set($identity, $model = null)
     {
-        if (func_num_args() < 2) {
-            [$model, $identity] = [$identity, $identity->identity()];
-        }
+        @[$identity, $model] = static::getIdentity($identity, $model);
         static::instance()->models[(string) $identity] = $model;
         return static::instance();
     }
 
     public static function get($identity)
     {
+        @[$identity] = static::getIdentity($identity);
         return static::instance()->models[(string) $identity] ?? null;
     }
 
     public static function getOrSet($identity, $model = null)
     {
-        if (func_num_args() < 2) {
-            [$model, $identity] = [$identity, $identity->identity()];
-        }
+        @[$identity, $model] = static::getIdentity($identity, $model);
         if (!static::has($identity)) {
             static::set($identity, $model);
             return $model;
         } else {
             $old = static::get($identity);
-            /** @todo Sync state */
+            // sync state
             $props = $old->getUpdatedProps();
             $old->fill($model->getData());
             $old->saveState();
-            var_dump($props);
-            foreach ($props as $name => $value) {
-                $old->$name = $value;
-            }
-            $old->saveState();
+            $old->fill($props);
             return $old;
         }
-        // return static::get($identity);
     }
 
     public static function unset($identity)
     {
+        @[$identity] = static::getIdentity($identity);
         unset(static::instance()->models[(string) $identity]);
         return static::instance();
     }
