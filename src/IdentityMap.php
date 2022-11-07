@@ -21,11 +21,8 @@ class IdentityMap
         if (func_num_args() > 1 && $model instanceof ActiveRecord) {
             return [$identity, $model];
         }
-        if ($identity instanceof ActiveRecord) {
-            return [$identity->identity(), $identity];
-        } else {
-            return [$identity];
-        }
+        return ($identity instanceof ActiveRecord) 
+        ? [$identity->identity(), $identity] : [$identity];
     }
 
     protected function __construct()
