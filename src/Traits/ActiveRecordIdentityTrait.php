@@ -16,7 +16,8 @@ trait ActiveRecordIdentityTrait
     public function identity()
     {
         if (!$this->identity) {
-            $this->identity = ModelIdentity::createFromModel($this);
+            // $this->identity = ModelIdentity::createFromModel($this);
+            $this->identity = implode(':', [static::class, $this->primaryValue(), static::getDbName()]);
         }
         return $this->identity;
     }
@@ -28,6 +29,6 @@ trait ActiveRecordIdentityTrait
 
     public function identityMapRemove()
     {
-        IdentityMap::unset($this->identity());
+        IdentityMap::unset($this);
     }
 }
