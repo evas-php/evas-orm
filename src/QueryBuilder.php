@@ -78,6 +78,6 @@ class QueryBuilder extends DbQueryBuilder
     {
         if ($columns) $this->addSelect(...func_get_args());
         $model = $this->limit(1)->query()->object($this->model);
-        return $model->identityMapSave();
+        return is_null($model) ? $model : $model->identityMapSave();
     }
 }
