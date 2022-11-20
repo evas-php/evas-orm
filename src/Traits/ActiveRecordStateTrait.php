@@ -63,11 +63,23 @@ trait ActiveRecordStateTrait
             return $props;
         } else {
             $state = $this->getState();
-            // return array_diff($props, $state ?? []);
-            return array_merge(
-                array_fill_keys(array_keys(array_diff($state ?? [], $props)), null),
-                array_diff_assoc($props, $state ?? [])
-            );
+            // // return array_diff($props, $state ?? []);
+            // // var_dump($state);
+            // // echo '<br>';
+            // // var_dump($props);
+            // // echo '<br>';
+            $updated = [];
+            foreach ($props as $name => $value) {
+                if (!isset($state[$name]) || $value !== $state[$name]) {
+                    $updated[$name] = $value;
+                }
+            }
+            // var_dump($updated); echo '<hr>';
+            return $updated;
+            // return array_merge(
+            //     array_fill_keys(array_keys(array_diff($state ?? [], $props)), null),
+            //     array_diff_assoc($props, $state ?? [])
+            // );
         }
     }
 }
