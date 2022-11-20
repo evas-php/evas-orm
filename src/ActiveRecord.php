@@ -11,6 +11,8 @@ use Evas\Orm\Exceptions\LastInsertIdUndefinedException;
 use Evas\Orm\Traits\ActiveRecordConvertTrait;
 use Evas\Orm\Traits\ActiveRecordDatabaseTrait;
 use Evas\Orm\Traits\ActiveRecordDataTrait;
+use Evas\Orm\Traits\ActiveRecordRelatedsTrait;
+use Evas\Orm\Traits\ActiveRecordRelationsTrait;
 use Evas\Orm\Traits\ActiveRecordStateTrait;
 use Evas\Orm\Traits\ActiveRecordTableTrait;
 use Evas\Orm\Traits\ActiveRecordQueryTrait;
@@ -26,6 +28,10 @@ class ActiveRecord implements \JsonSerializable
     use ActiveRecordDatabaseTrait;
 
     use ActiveRecordDataTrait;
+
+    use ActiveRecordRelatedsTrait;
+
+    use ActiveRecordRelationsTrait;
 
     use ActiveRecordStateTrait;
 
