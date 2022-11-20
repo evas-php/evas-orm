@@ -68,26 +68,37 @@ class ActiveRecord implements \JsonSerializable
      */
     public function save()
     {
-        $props = $this->getUpdatedProps();
-        if (empty($props)) {
+        if (empty($this->getUpdatedProps())) {
             $this->hook('nothingSave');
             return $this;
         }
 
-        $this->hook('beforeSave', $props);
+        $this->hook('beforeSave');
         $pk = static::primaryKey();
         if ($this->isStateHasPrimaryValue()) {
-            $this->hook('beforeUpdate', $props);
-            static::table(true)->where($pk, $this->$pk)->update($props);
-            $this->hook('afterUpdate', $props);
-        } else {
-            $this->hook('beforeInsert', $props);
-            static::table(true)->insert($props);
-            $this->$pk = static::lastInsertId();
-            if (empty($this->$pk)) {
-                throw new LastInsertIdUndefinedException();
+            $this->hook('beforeUpdate');
+            $props = $this->getUpdatedProps();
+            if (empty($props)) {
+                $this->hook('nothingUpdate');
+                return $this;
+            } else {
+                static::table(true)->where($pk, $this->$pk)->update($props);
+                $this->hook('afterUpdate', $props);
             }
-            $this->hook('afterInsert', $props);
+        } else {
+            $this->hook('beforeInsert');
+            $props = $this->getUpdatedProps();
+            if (empty($props)) {
+                $this->hook('nothingInsert');
+                return $this;
+            } else {
+                static::table(true)->insert($props);
+                $this->$pk = static::lastInsertId();
+                if (empty($this->$pk)) {
+                    throw new LastInsertIdUndefinedException();
+                }
+                $this->hook('afterInsert', $props);
+            }
         }
         $this->hook('afterSave', $props);
         // return static::getDb()->identityMapUpdate($this, $pk);
