@@ -46,7 +46,7 @@ trait ActiveRecordTableTrait
      */
     public static function table(bool $write = false): TableInterface
     {
-        return static::getDb($write)->table(static::tableName());
+        return static::db($write)->table(static::tableName());
     }
 
     /**

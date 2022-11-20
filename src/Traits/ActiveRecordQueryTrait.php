@@ -18,7 +18,7 @@ trait ActiveRecordQueryTrait
      */
     public static function query(string $sql, array $values = null)
     {
-        $qr = static::getDb()->query($sql, $values);
+        $qr = static::db()->query($sql, $values);
         return strstr($qr->stmt()->queryString, 'LIMIT 1') 
             ? $qr->object(static::class)
             : $qr->objectAll(static::class);
@@ -34,7 +34,7 @@ trait ActiveRecordQueryTrait
     public static function __callStatic(string $name, array $args = null)
     {
         if (method_exists(QueryBuilder::class, $name)) {
-            $db = static::getDb();
+            $db = static::db();
             return (new QueryBuilder($db, static::class))->$name(...$args);
         }
         throw new \BadMethodCallException(sprintf(
@@ -50,7 +50,7 @@ trait ActiveRecordQueryTrait
     public static function find($ids)
     {
         $ids = func_num_args() > 1 ? func_get_args() : $ids;
-        $db = static::getDb();
+        $db = static::db();
         return (new QueryBuilder($db, static::class))->find($ids);
     }
 }

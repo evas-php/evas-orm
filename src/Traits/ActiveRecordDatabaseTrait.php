@@ -21,9 +21,9 @@ trait ActiveRecordDatabaseTrait
      * @param bool использовать ли соединение для записи
      * @return DatabaseInterface
      */
-    public static function getDb(bool $write = false): DatabaseInterface
+    public static function db(bool $write = false): DatabaseInterface
     {
-        $dbname = static::getDbName($write);
+        $dbname = static::dbName($write);
         return App::db($dbname);
     }
 
@@ -32,7 +32,7 @@ trait ActiveRecordDatabaseTrait
      * @param bool использовать ли соединение для записи
      * @return string|null
      */
-    public static function getDbName(bool $write = false): ?string
+    public static function dbName(bool $write = false): ?string
     {
         return true === $write && !empty(static::$dbnameWrite)
             ? static::$dbnameWrite : static::$dbname;

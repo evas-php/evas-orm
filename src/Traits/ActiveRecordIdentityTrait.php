@@ -21,7 +21,7 @@ trait ActiveRecordIdentityTrait
     public function identity(): string
     {
         if (!$this->identity) {
-            $this->identity = implode(':', [static::class, $this->primaryValue(), static::getDbName()]);
+            $this->identity = implode(':', [static::class, $this->primaryValue(), static::dbName()]);
         }
         return $this->identity;
     }
