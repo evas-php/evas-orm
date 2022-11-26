@@ -8,13 +8,10 @@ namespace Evas\Orm\Traits;
 
 use Evas\Base\Help\PhpHelp;
 use Evas\Orm\Relation;
+use Evas\Orm\RelationsMap;
 
 trait ActiveRecordRelationsTrait
 {
-    /** @static Relation[] связи */
-    // protected static $relations;
-    protected static $relations;
-
     /**
      * Описание связей модели.
      * @return array
@@ -66,35 +63,13 @@ trait ActiveRecordRelationsTrait
 
 
     /**
-     * Инициализация связей.
-     * @throws \InvalidArgumentException
-     */
-    protected static function initRelations()
-    {
-        if (!is_null(static::$relations)) return;
-        $relations = static::relations();
-        if ($relations) foreach ($relations as $name => &$relation) {
-            if (!$relation instanceof Relation) {
-                throw new \InvalidArgumentException(sprintf(
-                    'Relation must be instance of %s, %s given', 
-                    Relation::class, PhpHelp::getType($relation)
-                ));
-            }
-            $relation->setName($name);
-        }
-        static::$relations = &$relations;
-    }
-
-    /**
      * Получение связи по имени.
      * @param string имя связи
      * @return Relation|null
      */
     public static function getRelation(string $name): ?Relation
     {
-        static::initRelations();
-        return static::$relations[$name] ?? null;
-        // return static::relations()[$name] ?? null;
+        return RelationsMap::getRelation(static::class, $name);
     }
 
     /**
@@ -104,8 +79,6 @@ trait ActiveRecordRelationsTrait
      */
     public static function hasRelation(string $name): bool
     {
-        static::initRelations();
-        return isset(static::$relations[$name]);
-        // return isset(static::relations()[$name]);
+        return RelationsMap::hasRelation(static::class, $name);
     }
 }
