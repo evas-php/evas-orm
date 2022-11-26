@@ -7,6 +7,7 @@
 namespace Evas\Orm;
 
 use Evas\Orm\ActiveRecord;
+use Evas\Orm\QueryBuilder;
 
 class Relation
 {
@@ -87,23 +88,60 @@ class Relation
     public function setName(string $name)
     {
         $this->name = $name;
-        // $this->foreignFullKey = "$this->name.$this->foreignKey";
         return $this;
     }
 
-    public function foreignColumn(string $column, bool $useName = false)
+    /**
+     * Получение внешнего столбца.
+     * @param string столбец
+     * @param bool|null исользовать ли имя связи вместо имение таблицы
+     * @return string
+     */
+    public function foreignColumn(string $column, bool $useName = false): string
     {
         return ($useName ? $this->name : $this->foreignTable) .'.'. $column;
     }
 
-    public function foreignPrimary(bool $useName = false)
+    /**
+     * Получение внешнего первичного ключа.
+     * @param bool|null исользовать ли имя связи вместо имение таблицы
+     * @return string
+     */
+    public function foreignPrimary(bool $useName = false): string
     {
         return $this->foreignColumn($this->foreignModel::primaryKey(), $useName);
     }
 
-    public function foreignKey(bool $useName = false)
+    /**
+     * Получение внешнего ключа связи.
+     * @param bool|null исользовать ли имя связи вместо имение таблицы
+     * @return string
+     */
+    public function foreignKey(bool $useName = false): string
     {
         return $this->foreignColumn($this->foreignKey, $useName);
+    }
+
+    /**
+     * Получение локального ключа связи.
+     * @param bool|null исользовать ли полный ключ
+     * @return string
+     */
+    public function localKey(bool $useFull = true): string
+    {
+        return ($useFull ? ($this->localTable.'.') : '') . $this->localKey;
+    }
+
+    /**
+     * Получение аргументов для join.
+     * @param QueryBuilder
+     */
+    public function joinArgs(QueryBuilder $query = null, bool $useName = false): array
+    {
+        return [
+            $query ?? $this->foreignTable, $this->name, 
+            $this->foreignKey($useName), $this->localKey(true)
+        ];
     }
 
     /**
@@ -117,17 +155,29 @@ class Relation
         return $model->addRelated($this->name, new $this->foreignModel($foreignData));
     }
 
+    /**
+     * Является ли связь связью к одному.
+     * @return bool
+     */
     public function isOne(): bool
     {
         return in_array($this->type, ['hasOne', 'belongsTo']);
     }
 
+    /**
+     * Является ли связь связью ко многим.
+     * @return bool
+     */
     public function isMany(): bool
     {
         return !$this->isOne();
     }
 
 
+    /**
+     * Приведение к строке.
+     * @return string
+     */
     public function __toString()
     {
         return json_encode([
