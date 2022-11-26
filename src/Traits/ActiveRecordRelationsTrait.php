@@ -32,7 +32,9 @@ trait ActiveRecordRelationsTrait
     public static function hasMany(
         string $foreignModel, string $foreignKey = null, string $localKey = null
     ): Relation {
-        return new Relation('hasMany', static::class, $foreignModel, $foreignKey, $localKey);
+        return new Relation(
+            'hasMany', static::class, $foreignModel, $foreignKey, $localKey
+        );
     }
 
     /**
@@ -45,7 +47,9 @@ trait ActiveRecordRelationsTrait
     public static function hasOne(
         string $foreignModel, string $foreignKey = null, string $localKey = null
     ): Relation {
-        return new Relation('hasOne', static::class, $foreignModel, $foreignKey, $localKey);
+        return new Relation(
+            'hasOne', static::class, $foreignModel, $foreignKey, $localKey
+        );
     }
 
     /**
@@ -58,7 +62,9 @@ trait ActiveRecordRelationsTrait
     public static function belongsTo(
         string $foreignModel, string $foreignKey = null, string $localKey = null
     ): Relation {
-        return new Relation('belongsTo', static::class, $foreignModel, $foreignKey, $localKey);
+        return new Relation(
+            'belongsTo', static::class, $foreignModel, $foreignKey, $localKey
+        );
     }
 
 
