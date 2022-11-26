@@ -22,7 +22,7 @@ trait QueryBuilderRelationsTrait
         return $this->model::getRelation($name);
     }
 
-    protected function addWith(string $name, $columns, $query = null)
+    protected function addWith(string $name, $columns, self $query = null)
     {
         $relation = $this->getRelation($name);
         if ($relation) {
@@ -33,7 +33,7 @@ trait QueryBuilderRelationsTrait
             // }
             $list[$relation->name] = [$relation, $columns, $query];
         }
-        echo title('addWith: ' . $name, 3);// . dumpOrm($relation);
+        // echo title('addWith: ' . $name, 3);// . dumpOrm($relation);
         // echo dumpOrm($this->model::$relations);
         return $this;
     }
@@ -127,22 +127,19 @@ trait QueryBuilderRelationsTrait
                 }
             }
 
-            $args = [
-                $relation->foreignTable, $relation->name, 
-                $relation->foreignKey(), $relation->localFullKey
-            ];
+            $args = $relation->joinArgs(null, false);
 
             if ($isNot) {
                 if (func_num_args() > 3) {
                     $this->leftJoinSub(...$args);
-                    $this->groupBy($relation->localFullKey);
+                    $this->groupBy($relation->localKey(true));
                 } else {
                     $this->leftOuterJoinSub(...$args);
                     $this->whereNull($relation->foreignKey());
                 }
             } else {
                 $this->joinSub(...$args);
-                $this->groupBy($relation->localFullKey);
+                $this->groupBy($relation->localKey(true));
             }
         }
 
@@ -200,7 +197,7 @@ trait QueryBuilderRelationsTrait
     {
         // $withs = array_filter($this->withs, fn($with) => $with->isOne());
         if (1 > count($this->withs)) return;
-        echo title('applyWiths', 3);
+        // echo title('applyWiths', 3);
         $columns = static::prepareModelColumns($this->columns, $this->model);
         $this->select($columns);
         foreach ($this->withs as [$relation, $columns, $query]) {
@@ -215,12 +212,13 @@ trait QueryBuilderRelationsTrait
             $columns, $relation->foreignModel, $relation->name
         );
         $this->select($columns);
-        $this->leftJoinSub(
-            $query ?? $relation->foreignTable, 
-            $relation->name, 
-            "{$relation->name}.{$relation->foreignKey}", 
-            $relation->localFullKey
-        );
+        // $this->leftJoinSub(
+        //     $query ?? $relation->foreignTable, 
+        //     $relation->name, 
+        //     "{$relation->name}.{$relation->foreignKey}", 
+        //     $relation->localKey(true)
+        // );
+        $this->leftJoinSub(...$relation->joinArgs($query, true));
         return $this;
     }
 
