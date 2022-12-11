@@ -16,7 +16,7 @@ trait ActiveRecordRelationsTrait
      * Описание связей модели.
      * @return array
      */
-    protected static function relations(): array
+    public static function relations(): array
     {
         return [];
     }
