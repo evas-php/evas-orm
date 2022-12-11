@@ -64,14 +64,19 @@ class QueryBuilder extends DbQueryBuilder
      */
     public function get($columns = null): array
     {
-        $this->applyWiths();
+        $this->applyRelationsBefore();
+
         if ($columns) $this->select(...func_get_args());
         $models = $this->query()->objectAll($this->model);
+        if (!$models) return $models;
+        $ids = [];
         foreach ($models as &$model) {
             $model = $model->identityMapSave();
-            if (0 < count($this->withs)) $this->parseWiths($model);
+            if (0 < count($this->withOne)) $this->parseWiths($model);
+            $ids[] = $model->primaryValue();
         }
-        $models = array_unique($models);
+        // $models = array_unique($models);
+        $this->applyRelationsAfter($ids, $models);
         return $models;
     }
 
@@ -80,14 +85,15 @@ class QueryBuilder extends DbQueryBuilder
      * @param array|null столбцы для получения
      * @return array|null найденная запись
      */
-    public function one($columns = null)
+     public function one($columns = null)
     {
-        $this->applyWiths();
+        $this->applyRelationsBefore();
         if ($columns) $this->select(...func_get_args());
         $model = $this->limit(1)->query()->object($this->model);
         if ($model) {
-            if (0 < count($this->withs)) $this->parseWiths($model);
+            if (0 < count($this->withOne)) $this->parseWiths($model);
             $model = $model->identityMapSave();
+            $this->applyRelationsAfter([$model->primaryValue(), [$model]]);
         }
         return $model;
         // return is_null($model) ? $model : $model->identityMapSave();
