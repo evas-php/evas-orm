@@ -123,13 +123,23 @@ class Relation
     }
 
     /**
+     * Получение локального столбца.
+     * @param bool|null исользовать ли полный ключ
+     * @return string
+     */
+    public function localColumn(string $column, bool $useFull = true): string
+    {
+        return ($useFull ? ($this->localTable.'.') : '') . $column;
+    }
+
+    /**
      * Получение локального ключа связи.
      * @param bool|null исользовать ли полный ключ
      * @return string
      */
     public function localKey(bool $useFull = true): string
     {
-        return ($useFull ? ($this->localTable.'.') : '') . $this->localKey;
+        return $this->localColumn($this->localKey, $useFull);
     }
 
     /**
