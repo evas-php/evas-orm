@@ -163,14 +163,16 @@ trait QueryBuilderRelationsWithTrait
     protected function applyWith($key, $val, array $ids, array &$models)
     {
         $relation = $this->getRelation($key);
+        
         $qb = (new static($this->db, $relation->foreignModel));
         $qb->whereIn($relation->foreignKey, $ids);
         if (!empty($val)) $qb->with($val);
         $subModels = $qb->get();
         if (!$subModels) return;
-        $idsLocal = [];
+
+        // $idsLocal = [];
         foreach ($subModels as $subModel) {
-            $idsLocal[] = $subModel->primaryValue();
+            // $idsLocal[] = $subModel->primaryValue();
             foreach ($models as $model) {
                 if ($model->{$relation->localKey} == $subModel->{$relation->foreignKey}) {
                     $model->addRelated($relation->name, $subModel);
