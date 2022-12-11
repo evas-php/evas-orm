@@ -60,12 +60,87 @@ trait QueryBuilderRelationsWithTrait
     //     return $this;
     // }
 
+    protected $withs = [];
+
     // public function with(...$props)
     // {
     //     $this->withs = array_merge($this->withs, $props);
     //     echo dumpOrm($this->withs);
     //     return $this;
     // }
+
+    public function with(...$props)
+    {
+        // echo dumpOrm($props);
+        $withs = [];
+        foreach ($props as &$prop) {
+            if (is_string($prop)) {
+                $withs[] = $this->levels(explode('.', $prop));
+            } else if (is_array($prop)) {
+                $withs[] = $this->recursiveArrayWith($prop);
+            }
+        }
+        $this->withs = array_merge_recursive(...$withs);
+        // echo dumpOrm($this->withs);
+        return $this;
+    }
+
+    protected function levels($levels, $value = [])
+    {
+        $levels = array_reverse($levels);
+        $with = $value;
+        foreach ($levels as $level) {
+            $with = [$level => $with];
+        }
+        return $with;
+    }
+
+    protected function recursiveArrayWith(array $props)
+    {
+        $withs = [];
+        foreach ($props as $i => $prop) {
+            $key = is_string($i) ? $i : $prop;
+            $val = is_string($i) ? $prop : [];
+
+            if (is_array($val)) $val = $this->recursiveArrayWith($val);
+            else if (is_string($val)) $val = [$val => []];
+            
+            // вложенность связей в ключе
+            if (is_string($key)) {
+                $levels = explode('.', $key);
+                if (count($levels) > 1) {
+                    $key = array_shift($levels);
+                    $val = $this->levels($levels, $val);
+                }
+            }
+            // слияние значений уже существующего ключа
+            if (isset($withs[$key]) && is_array($withs[$key])) {
+                if (is_numeric($val)) return;
+                if (is_string($val)) $val = [$val];
+                $val = array_merge($withs[$key], $val);
+            }
+            $withs[$key] = $val;
+        }
+        return $withs;
+    }
+
+    // protected function recursiveArrayWith(array $props)
+    // {
+    //     $withs = [];
+    //     foreach ($props as $i => $prop) {
+    //         $names = is_string($i) ? explode('.', $i) : [];
+    //         if (is_string($prop)) {
+    //             $withs[] = array_merge($names, explode('.', $prop));
+    //         } else if (is_array($prop)) {
+    //             $subs = $this->recursiveArrayWith($prop);
+    //             foreach ($subs as $sub) {
+    //                 $withs[] = array_merge($names, $sub);
+    //             }
+    //         }
+    //     }
+    //     return $withs;
+    // }
+
 
     protected function applyWiths(array $ids, array &$models)
     {
@@ -77,6 +152,32 @@ trait QueryBuilderRelationsWithTrait
         // foreach ($this->withOne as [$relation, $columns, $query]) {
         //     $this->applyWith($relation, $columns, $query);
         // }
+        // return;
+        if (1 > count($this->withs)) return;
+        $keys = array_keys($this->withs);
+        foreach ($keys as $key) {
+            $this->applyWith($key, $this->withs[$key], $ids, $models);
+        }
+    }
+
+    protected function applyWith($key, $val, array $ids, array &$models)
+    {
+        $relation = $this->getRelation($key);
+        $qb = (new static($this->db, $relation->foreignModel));
+        $qb->whereIn($relation->foreignKey, $ids);
+        if (!empty($val)) $qb->with($val);
+        $subModels = $qb->get();
+        if (!$subModels) return;
+        $idsLocal = [];
+        foreach ($subModels as $subModel) {
+            $idsLocal[] = $subModel->primaryValue();
+            foreach ($models as $model) {
+                if ($model->{$relation->localKey} == $subModel->{$relation->foreignKey}) {
+                    $model->addRelated($relation->name, $subModel);
+                    break;
+                }
+            }
+        }
     }
 
     // protected function applyWith(
