@@ -40,8 +40,8 @@ trait ActiveRecordRelatedsTrait
         $relation = static::getRelation($name);
         $related = $related->identityMapSave();
         if (!$relation) return $this;
-        if (false) {
-        // if ($relation->isOne()) {
+        // if (false) {
+        if ($relation->isOne()) {
             if (!isset($this->relatedCollections[$name]) && $related->primaryValue()) {
                 $this->relatedCollections[$name] = &$related;
             }

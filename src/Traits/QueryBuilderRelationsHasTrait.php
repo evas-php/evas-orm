@@ -51,31 +51,94 @@ trait QueryBuilderRelationsHasTrait
     ) {
         $relationNames = explode('.', $relationName);
         $model = $this->model;
+        // $relations = [];
+        // foreach ($relationNames as $name) {
+        //     $relation = $model::getRelation($name);
+        //     $model = $relation->foreignModel;
+        //     $relations[] = $relation;
+        // }
+        // if (!count($relations)) return;
+
+        $relationGroups = [];
+        $dbName = null;
         $relations = [];
         foreach ($relationNames as $name) {
             $relation = $model::getRelation($name);
             $model = $relation->foreignModel;
+
+            if ($dbName !== $model::dbName()) {
+                if (!empty($relations)) {
+                    $relationGroups[] = $relations;
+                }
+                $dbName = $model::dbName();
+                $relations = [];
+            }
+
             $relations[] = $relation;
         }
-        if (!count($relations)) return;
+        if (!empty($relations)) {
+            $relationGroups[] = $relations;
+        }
+        if (!count($relationGroups)) return;
+        // foreach ($relationGroups as $relations) {
+        //     foreach ($relations as $relation) {
+        //         echo dumpOrm($relation);
+        //     }
+        //     echo '<hr>';
+        // }
+        // exit();
 
-        if ($hasCount = func_num_args() > 3) {
+
+        if (func_num_args() > 3) {
             $this->prepareValueAndOperator(
                 $value, $operator, func_num_args() === 4
             );
-        }
-
-        $relations = array_reverse($relations);
-        $query = $this->realApplyHas($relations, $operator, $value, $hasCount);
-
-
-        if (count($relations) < 2 && $hasCount) {
-            $this->where($query, $operator, $value);
-            echo dumpOrm($this->getSql());
-            echo dumpOrm($this->getBindings());
+            $opval = [$operator, $value];
         } else {
-            $this->whereExists($query);
+            $opval = null;
         }
+
+        
+        // exit();
+
+        // $relations = array_reverse($relations);
+        // $query = $this->realApplyHas($relations, $operator, $value, $isCount);
+
+        $last = count($relationGroups) - 1;
+        if (0 === $last) {
+            $relations = array_reverse($relationGroups[0]);
+            $query = $this->realApplyHas($relations, $opval);
+
+            if (count($relations) < 2 && $opval) {
+                $this->where($query, ...$opval);
+                echo dumpOrm($this->getSql());
+                echo dumpOrm($this->getBindings());
+            } else {
+                $this->whereExists($query);
+            }
+        } else {
+            $ids = null;
+            foreach ($relationGroups as $i => $relations) {
+                $ids = $this->applyGroupHas(
+                    $relations, $ids, $last === $i ? $opval : null
+                );
+                // $relations = array_reverse($relations);
+                // $query = $this->realApplyHas($relations, $last === $i ? $opval : null);
+                // var_dump($query);
+                // echo '<br>';
+            }
+            $this->whereIn($this->primaryKey(), $ids);
+        }
+
+
+        // if (count($relations) < 2 && $opval) {
+        //     $this->where($query, ...$opval);
+        //     echo dumpOrm($this->getSql());
+        //     echo dumpOrm($this->getBindings());
+        // } else {
+        //     $this->whereExists($query);
+        // }
+
 
         // if (in_array($operator, ['<', '<='])) {
         //     $query = $this->realApplyNotHas($relations, $operator);
@@ -86,28 +149,84 @@ trait QueryBuilderRelationsHasTrait
         // $this->whereRaw('EXISTS (SELECT COUNT(`id`) AS `count_id` FROM `company` WHERE `user`.`id` = `company`.`user_id` AND (SELECT COUNT(`id`) AS `count_id` FROM `user` WHERE `company`.`user_id` = `user`.`id`) > 100)');
     }
 
-    protected function realApplyHas($relations, $operator, $value, bool $hasCount = false)
+    protected function applyGroupHas($relations, array $ids = null, array $opval = null)
+    {
+        echo dumpOrm($relations);
+        $relations = array_reverse($relations);
+        $last = count($relations) - 1;
+        $q = clone $this;
+        $q->db = $relations[0]->foreignModel::db();
+        $q->withs = [];
+        $q->has = [];
+        $q->resetFrom($relations[0]->localModel::tableName());
+        if ($ids) {
+            $q->whereIn($relations[0]->localKey(true), $ids);
+            $ids = null;
+            // $q->resetSelect(['iid' => $relations[0]->foreignKey(true)]);
+            array_pop($relations);
+        } else {
+            // 
+        }
+        $query = $q->realApplyHas($relations, $opval);
+        if (count($relations) < 2 && $opval) {
+            $q->where($query, ...$opval);
+        } else {
+            $q->whereExists($query);
+        }
+        echo '<div class="block gray"><h3 class="title">SQL:</h3>';
+        echo dumpOrm($q->getSql());
+        echo dumpOrm($q->getBindings());
+        echo '</div>';
+        $models = $q->get();
+        echo dumpOrm($models);
+        $ids = [];
+        foreach ($models as $model) {
+            $ids[] = $model->id;
+        }
+        echo dumpOrm($ids);
+        return $ids;
+    }
+
+    protected function realApplyHas($relations, array $opval = null)
     {
         $query = null;
         foreach ($relations as $i => $relation) {
-            $query = function ($q) use (
-                $relation, $query, $value, $operator, $hasCount, $i
-            ) {
+            $query = function ($q) use ($relation, $query, $opval, $i) {
                 $q->from($relation->foreignTable);
                 $q->whereColumn($relation->localKey(true), $relation->foreignKey(false));
                 if ($query) {
-                    if (1 == $i  && $hasCount) {
-                        $q->where($query, $operator, $value);
-                    } else {
-                        $q->whereExists($query);
-                    }
-                } else if (0 == $i  && $hasCount) {
+                    if (1 == $i && $opval) $q->where($query, ...$opval);
+                    else $q->whereExists($query);
+                } else if (0 == $i && $opval) {
                     $q->count('id');
                 }
             };
         }
         return $query;
     }
+
+    // protected function realApplyHas($relations, $operator, $value, bool $isCount = false)
+    // {
+    //     $query = null;
+    //     foreach ($relations as $i => $relation) {
+    //         $query = function ($q) use (
+    //             $relation, $query, $value, $operator, $isCount, $i
+    //         ) {
+    //             $q->from($relation->foreignTable);
+    //             $q->whereColumn($relation->localKey(true), $relation->foreignKey(false));
+    //             if ($query) {
+    //                 if (1 == $i && $isCount) {
+    //                     $q->where($query, $operator, $value);
+    //                 } else {
+    //                     $q->whereExists($query);
+    //                 }
+    //             } else if (0 == $i && $isCount) {
+    //                 $q->count('id');
+    //             }
+    //         };
+    //     }
+    //     return $query;
+    // }
 
     protected function realApplyNotHas($relations, $operator, bool $isAnd = false)
     {

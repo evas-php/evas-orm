@@ -81,7 +81,7 @@ trait QueryBuilderRelationsTrait
         // $columns = static::prepareModelColumns($this->columns, $this->model);
         // $this->select($columns);
         // $this->applyWiths();
-        // $this->applyHases();
+        $this->applyHases();
     }
 
     protected function applyRelationsAfter(array $ids, array &$models)
