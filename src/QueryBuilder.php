@@ -93,7 +93,7 @@ class QueryBuilder extends DbQueryBuilder
         if ($model) {
             if (0 < count($this->withOne)) $this->parseWiths($model);
             $model = $model->identityMapSave();
-            $this->applyRelationsAfter([$model->primaryValue(), [$model]]);
+            $this->applyRelationsAfter([$model->primaryValue()], [$model]);
         }
         return $model;
         // return is_null($model) ? $model : $model->identityMapSave();
