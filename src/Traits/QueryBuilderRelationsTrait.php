@@ -84,7 +84,7 @@ trait QueryBuilderRelationsTrait
         $this->applyHases();
     }
 
-    protected function applyRelationsAfter(array $ids, array &$models)
+    protected function applyRelationsAfter(array $ids, array $models)
     {
         if (1 > count($this->withs)) return;
         $this->applyWiths($ids, $models);

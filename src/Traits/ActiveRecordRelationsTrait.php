@@ -55,12 +55,12 @@ trait ActiveRecordRelationsTrait
     /**
      * Установка единичной связи к родителю.
      * @param string класс внешней модели
-     * @param string|null внешний ключ
      * @param string|null локальный ключ
+     * @param string|null внешний ключ
      * @return Relation
      */
     public static function belongsTo(
-        string $foreignModel, string $foreignKey = null, string $localKey = null
+        string $foreignModel, string $localKey = null, string $foreignKey = null
     ): Relation {
         return new Relation(
             'belongsTo', static::class, $foreignModel, $foreignKey, $localKey

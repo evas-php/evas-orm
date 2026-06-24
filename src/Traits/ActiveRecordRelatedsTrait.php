@@ -6,6 +6,7 @@
  */
 namespace Evas\Orm\Traits;
 
+use Evas\Db\Builders\QueryBuilder;
 use Evas\Orm\ActiveRecord;
 use Evas\Orm\RelatedCollection;
 
@@ -86,5 +87,28 @@ trait ActiveRecordRelatedsTrait
             return $this->relatedCollections[$name] ?? null;
         }
         return null;
+    }
+
+    /**
+     * Подгрузка связанной/связанных записей.
+     * @param string $name имя связи
+     * @return void
+     */
+    public function loadRelated(string $name)
+    {
+        $relation = $this->getRelation($name);
+        $fModel = $relation->foreignModel;
+        $fKey = $relation->foreignKey;
+        $lKey = $relation->localKey;
+
+        $query = $fModel::where($fKey, $this->$lKey);
+        $relateds = $relation->isMany() ? $query->get() : $query->one();
+        if (!$relateds || (is_array($relateds) && count($relateds) < 1)) return;
+        
+        if (!is_array($relateds)) $relateds = [$relateds];
+        foreach ($relateds as $related) {
+            if ($this->$lKey !== $related->$fKey) continue;
+            $this->addRelated($relation->name, $related);
+        }
     }
 }

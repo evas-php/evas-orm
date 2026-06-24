@@ -167,6 +167,7 @@ trait QueryBuilderRelationsWithTrait
         $db = $fModel::db();
         $qb = (new static($db, $fModel));
         $qb->whereIn($relation->foreignKey, $ids);
+        // var_dump('hello');
         if (!empty($val)) $qb->with($val);
         $subModels = $qb->get();
         if (!$subModels) return;
