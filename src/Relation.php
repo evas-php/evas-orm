@@ -24,6 +24,11 @@ class Relation
     /** @var string имя связи */
     public $name;
 
+    public $localTable;
+    public $foreignTable;
+    public $localFullKey;
+    public $foreignFullKey;
+
     /**
      * Конструктор.
      * @param string тип связи
