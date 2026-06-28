@@ -129,8 +129,8 @@ class ActiveRecord implements \JsonSerializable
         }
         $this->hook('beforeDelete');
         $qr = static::table(true)->where($pk, $this->$pk)->limit(1)->delete();
-        $this->hook('afterDelete', $qr->rowsCount());
-        if (0 < $qr->rowsCount()) {
+        $this->hook('afterDelete', $qr->rowCount());
+        if (0 < $qr->rowCount()) {
             $this->identityMapRemove();
             $this->$pk = null;
             $this->saveState();

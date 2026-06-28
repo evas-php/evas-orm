@@ -294,12 +294,12 @@ class ActiveRecordTest extends DatabaseTestUnit
      */
     public function testQuery()
     {
-        $this->assertEmpty(User::find()->query()->rowsCount());
+        $this->assertEmpty(User::find()->query()->rowCount());
         $insertedUser1 = $this->insertUser();
         $insertedUser2 = $this->insertUser(static::UPDATED_USER_DATA);
         $this->assertEquals(2, User::table()->lastInsertId());
         $this->assertEquals(2, User::table()->maxId());
-        $this->assertEquals(2, User::find()->query()->rowsCount());
+        $this->assertEquals(2, User::find()->query()->rowCount());
 
         $findedUser = User::query('SELECT * FROM `users` WHERE id = ? LIMIT 1', [1]);
         $this->assertNotEmpty($findedUser);
