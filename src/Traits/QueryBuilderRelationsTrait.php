@@ -81,6 +81,7 @@ trait QueryBuilderRelationsTrait
         // $columns = static::prepareModelColumns($this->columns, $this->model);
         // $this->select($columns);
         // $this->applyWiths();
+        $this->applyWithsColumns();
         $this->applyHases();
     }
 

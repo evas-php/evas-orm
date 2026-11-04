@@ -1,11 +1,16 @@
 <?php
 namespace Evas\Orm\Traits;
 
+use Evas\Db\Builders\Traits\SelectTrait;
 use Evas\Orm\ActiveRecord;
 use Evas\Orm\Relation;
 
 trait QueryBuilderRelationsWithTrait
 {
+    use SelectTrait {
+        select AS originSelect;
+    }
+
     protected $withOne = [];
     protected $withMany = [];
 
@@ -140,6 +145,35 @@ trait QueryBuilderRelationsWithTrait
     //     }
     //     return $withs;
     // }
+
+    /**
+     * Добавление столбца/столбцов с учётом withs.
+     * @param mixed столбец/столбцы
+     * @return self
+     */
+    public function select($columns = ['*'])
+    {
+        $this->originSelect($columns);
+
+        return $this;
+    }
+
+    protected function applyWithsColumns()
+    {
+        if (1 > count($this->withs)) return;
+        // проходим по верхнему уровню связей и добавляем их ключи в колонки селекта, если их нет
+        $keys = \array_filter(
+            \array_map(fn ($key) => $this->getRelation($key)?->localKey, \array_keys($this->withs)), 
+            fn ($key) => $key && !count(\array_filter($this->columns, fn ($column) => \str_contains($column, $key)))
+        );
+        foreach ($this->from as $from) {
+            if (!preg_match('/`([^`\s]+)`\s*$/u', $from, $matches)) continue;
+            $table = $matches[1];
+            $keys = array_combine($keys, \array_map(fn ($key) => implode('.', [$table, $key]), $keys));
+        }
+        if (!count($this->columns)) $this->select();
+        $this->select($keys);
+    }
 
 
     protected function applyWiths(array $ids, array &$models)
