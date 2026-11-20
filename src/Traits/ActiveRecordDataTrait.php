@@ -31,7 +31,7 @@ trait ActiveRecordDataTrait
 
     /**
      * Заполнение модели свойствами.
-     * @param array свойства модели
+     * @param array $props свойства модели
      * @return self
      */
     public function fill(array $props)
@@ -53,17 +53,21 @@ trait ActiveRecordDataTrait
 
     /**
      * Установка свойства.
-     * @param string имя
-     * @param mixed значение
+     * @param string $name имя
+     * @param mixed $value значение
      */
     public function __set(string $name, $value)
     {
+        $column = static::table()->columnSchema($name);
+        if ($column) {
+            $value = static::converterRegistry()->denormalize($column->type, $value);
+        }
         $this->modelData[$name] = $value;
     }
 
     /**
      * Получение свойства или связанных моделей.
-     * @param string имя
+     * @param string $name имя
      * @return mixed значение
      */
     public function __get(string $name)
@@ -77,17 +81,17 @@ trait ActiveRecordDataTrait
 
     /**
      * Проверка наличия свойства.
-     * @param string имя свойства
+     * @param string $name имя свойства
      * @return bool
      */
     public function __isset(string $name): bool
     {
-        return isset($this->modelData[$name]);
+        return array_key_exists($name, $this->modelData);
     }
 
     /**
      * Очистка свойства.
-     * @param string имя свойства
+     * @param string $name имя свойства
      */
     public function __unset(string $name)
     {

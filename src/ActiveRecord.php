@@ -8,41 +8,37 @@ namespace Evas\Orm;
 
 use Evas\Base\Help\HooksTrait;
 use Evas\Orm\Exceptions\LastInsertIdUndefinedException;
-use Evas\Orm\Traits\ActiveRecordConvertTrait;
+use Evas\Orm\Traits\ActiveRecordConverterTrait;
 use Evas\Orm\Traits\ActiveRecordDatabaseTrait;
 use Evas\Orm\Traits\ActiveRecordDataTrait;
+use Evas\Orm\Traits\ActiveRecordExtractTrait;
+use Evas\Orm\Traits\ActiveRecordIdentityTrait;
 use Evas\Orm\Traits\ActiveRecordRelatedsTrait;
 use Evas\Orm\Traits\ActiveRecordRelationsTrait;
 use Evas\Orm\Traits\ActiveRecordStateTrait;
 use Evas\Orm\Traits\ActiveRecordTableTrait;
 use Evas\Orm\Traits\ActiveRecordQueryTrait;
 
-use Evas\Orm\Traits\ActiveRecordIdentityTrait;
 
 
 class ActiveRecord implements \JsonSerializable
 {
-    // подключаем конвертацию
-    use ActiveRecordConvertTrait;
-
+    use ActiveRecordConverterTrait;
     use ActiveRecordDatabaseTrait;
-
     use ActiveRecordDataTrait;
+    use ActiveRecordExtractTrait;
+
+    // подключаем Identity Map для записей
+    use ActiveRecordIdentityTrait;
 
     use ActiveRecordRelatedsTrait;
-
     use ActiveRecordRelationsTrait;
-
     use ActiveRecordStateTrait;
-
     use ActiveRecordTableTrait;
-
     use ActiveRecordQueryTrait;
-
+    
     // подключаем поддержку произвольных хуков в наследуемых классах
     use HooksTrait;
-
-    use ActiveRecordIdentityTrait;
 
     /**
      * Конструктор.

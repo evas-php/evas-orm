@@ -40,46 +40,58 @@ trait ActiveRecordStateTrait
     }
 
     /**
+     * Возвращает свойства модели, приведенные к типам БД согласно схеме таблицы.
+     * @return array<string, mixed>
+     */
+    public function getPreparedProps(): array
+    {
+        $table = static::table();
+        $prepared = [];
+        foreach ($this->getProps() as $name => $value) {
+            $column = $table->columnSchema($name);
+            if (!$column) continue;
+            $prepared[$name] = $this->convertValueToDb($value, $column);;
+        }
+        return $prepared;
+    }
+
+    /**
      * Получение данных записи для базы данных.
-     * @return array
+     * @return array<string, mixed>
      */
     public function getProps(): array
     {
+        $table = static::table();
+        $registry = static::converterRegistry();
         $props = [];
-        foreach (static::columns() as &$column) {
-            if (isset($this->$column)) $props[$column] = $this->$column;
+        foreach ($table->columnSchemas() as $name => $column) {
+            if (isset($this->$name)) {
+                $props[$name] = $registry->normalize($column->type, $this->$name);
+            }
         }
         return $props;
     }
 
+
     /**
-     * Получение маппинга измененных свойств записи.
-     * @return array
+     * Получение маппинга измененных свойств записи (для INSERT и UPDATE).
+     * @return array<string, mixed>
      */
     public function getUpdatedProps(): array
     {
         $props = $this->getProps();
-        if (empty($this->primaryValue())) {
-            return $props;
-        } else {
-            $state = $this->getState();
-            // // return array_diff($props, $state ?? []);
-            // // var_dump($state);
-            // // echo '<br>';
-            // // var_dump($props);
-            // // echo '<br>';
-            $updated = [];
-            foreach ($props as $name => $value) {
-                if (!isset($state[$name]) || $value !== $state[$name]) {
-                    $updated[$name] = $value;
-                }
+
+        // Для новой записи (INSERT) возвращаем все подготовленные свойства
+        if (empty($this->primaryValue())) return $props;
+
+        // Для существующей записи (UPDATE) возвращаем только изменившиеся свойства
+        $state = $this->getState();
+        $updated = [];
+        foreach ($props as $name => $value) {
+            if (!array_key_exists($name, $state) || $value !== $state[$name]) {
+                $updated[$name] = $value;
             }
-            // var_dump($updated); echo '<hr>';
-            return $updated;
-            // return array_merge(
-            //     array_fill_keys(array_keys(array_diff($state ?? [], $props)), null),
-            //     array_diff_assoc($props, $state ?? [])
-            // );
         }
+        return $updated;
     }
 }
